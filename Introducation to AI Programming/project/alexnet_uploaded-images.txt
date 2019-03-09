@@ -1,0 +1,94 @@
+Command Line Arguments:
+     dir = uploaded_images/ 
+    arch = alexnet 
+ dogfile = dognames.txt
+
+Pet Image Label Dictionary has 7 key-value pairs.
+Below are 7 of them:
+ 1 key:                    Ball_01.jpg  label:                       ball
+ 2 key:        Golden_Retriever_03.jpg  label:           golden retriever
+ 3 key:                     Cat_01.jpg  label:                        cat
+ 4 key:        Golden_Retriever_01.jpg  label:           golden retriever
+ 5 key:        Golden_Retriever_02.jpg  label:           golden retriever
+ 6 key:                    Cat_02.jpeg  label:                        cat
+ 7 key:        Golden_Retriever_04.jpg  label:           golden retriever
+
+     MATCH:
+
+                   Ball_01.jpg: 
+Real:                       ball   Classifier:                    tennis ball
+
+       Golden_Retriever_03.jpg: 
+Real:           golden retriever   Classifier:               golden retriever
+
+                    Cat_01.jpg: 
+Real:                        cat   Classifier:          tabby, tabby cat, cat
+
+       Golden_Retriever_01.jpg: 
+Real:           golden retriever   Classifier:               golden retriever
+
+       Golden_Retriever_02.jpg: 
+Real:           golden retriever   Classifier:               golden retriever
+
+       Golden_Retriever_04.jpg: 
+Real:           golden retriever   Classifier:               golden retriever
+
+ NOT A MATCH:
+
+                   Cat_02.jpeg: 
+Real:                        cat   Classifier:                       papillon
+
+# Total Images 7 # Matches: 6 # NOT Matches: 1
+
+     MATCH:
+
+                   Ball_01.jpg: 
+Real:                       ball   Classifier:                    tennis ball  
+PetLabelDog: 0  ClassLabelDog: 0
+
+       Golden_Retriever_03.jpg: 
+Real:           golden retriever   Classifier:               golden retriever  
+PetLabelDog: 1  ClassLabelDog: 1
+
+                    Cat_01.jpg: 
+Real:                        cat   Classifier:          tabby, tabby cat, cat  
+PetLabelDog: 0  ClassLabelDog: 0
+
+       Golden_Retriever_01.jpg: 
+Real:           golden retriever   Classifier:               golden retriever  
+PetLabelDog: 1  ClassLabelDog: 1
+
+       Golden_Retriever_02.jpg: 
+Real:           golden retriever   Classifier:               golden retriever  
+PetLabelDog: 1  ClassLabelDog: 1
+
+       Golden_Retriever_04.jpg: 
+Real:           golden retriever   Classifier:               golden retriever  
+PetLabelDog: 1  ClassLabelDog: 1
+
+ NOT A MATCH:
+
+                   Cat_02.jpeg: 
+Real:                        cat   Classifier:                       papillon  
+PetLabelDog: 0  ClassLabelDog: 1
+
+# Total Images 7 # Matches: 6 # NOT Matches: 1
+
+ ** Statistics from calculates_results_stats() function:
+N Images:  7  N Dog Images:  4  N NotDog Images:  3 
+Pct Corr dog: 100.0 Pct Corr NOTdog:  66.7  Pct Corr Breed: 100.0
+
+ ** Check Statistics - calculated from this function as a check:
+N Images:  7  N Dog Images:  4  N NotDog Images:  3 
+Pct Corr dog: 100.0 Pct Corr NOTdog:  66.7  Pct Corr Breed: 100.0
+CNN model architecture in use: alexnet
+Number of Images: 7
+Number of Dog Images: 4
+Number of "Not-a" Dog Images: 3
+Percentage Calculation: pct_match has value: 85.71
+Percentage Calculation: pct_correct_dogs has value: 100.00
+Percentage Calculation: pct_correct_notdogs has value: 66.67
+Percentage Calculation: pct_correct_breed has value: 100.00
+[Misclassified dog] Image: cat with  classifier labels: papillon
+
+** Total Elapsed Runtime: 0:0:0

@@ -14,12 +14,50 @@
 
 * Note that this code uses scientific notation to define large numbers. `4.445e8` is equal to `4.445 * 10 ** 8` which is equal to `444500000.0`.
 
+#### Integers and Floats
+
+* Because the float, or approximation, for 0.1 is actually slightly more than 0.1, when we add several of them together we can see the difference between the mathematically correct answer and the one that Python creates.
+
+    * ```python
+        >>> print(.1 + .1 + .1 == .3)
+        False
+        ```
+
 ### Lesson 3: Data Structures
 
-* List is mutable
-* Tuple is immutable
-* Set has no duplicates
-* Dictionary for mutable objects that store mapping of unique keys to values (A dictionary itself is mutable, but each of its individual keys must be immutable.)
+#### Slicing a list
+
+* You saw that we can pull more than one value from a list at a time by using slicing. When using slicing, it is important to remember that the `lower` index is `inclusive` and the `upper` index is `exclusive`.
+
+* ```python
+    >>> list_of_random_things = [1, 3.4, 'a string', True]
+    >>> list_of_random_things[1:2]
+    [3.4]
+    ```
+
+* will only return 3.4 in a list. Notice this is still different than just indexing a single element, because you get a list back with this indexing. The colon tells us to go from the starting value on the left of the colon up to, but not including, the element on the right.
+
+* If you know that you want to start at the beginning, of the list you can also leave out this value.
+    * ```python
+        >>> list_of_random_things[:2]
+        [1, 3.4]
+        ```
+
+* or to return all of the elements to the end of the list, we can leave off a final element.
+    * ```python
+        >>> list_of_random_things[1:]
+        [3.4, 'a string', True]
+        ```
+
+#### Mutability and Order
+
+* Mutability is about whether or not we can change an object once it has been created. If an object (like a list or string) can be changed (like a list can), then it is called mutable. However, if an object cannot be changed with creating a completely new object (like strings), then the object is considered immutable.
+
+    * List is mutable and ordered
+    * Tuple is immutable and ordered
+        * ```(1,2,3,4)```
+    * Set is mutable and has no duplicates
+    * Dictionary for mutable objects that store mapping of unique keys to values.
 
 * The == operator compares by checking for equality: If these cats were Python objects and we’d compare them with the == operator, we’d get “both cats are equal” as an answer.
 
@@ -29,9 +67,27 @@
 
 * Zip: 
     * ![zip](./images/zip.PNG)
+    * ```python
+        letters = ['a', 'b', 'c']
+        nums = [1, 2, 3]
+
+        for letter, num in zip(letters, nums):
+            print("{}: {}".format(letter, num))
+        ```
+    * In addition to zipping two lists together, you can also unzip a list into tuples using an asterisk.
+        * ```python
+            some_list = [('a', 1), ('b', 2), ('c', 3)]
+            letters, nums = zip(*some_list)
+            ```
 
 * Enumerate
     * ![enumerate](./images/enumerate.PNG)
+    * enumerate is a built in function that returns an iterator of tuples containing indices and values of a list. You'll often use this when you want the index along with each element of an iterable in a loop.
+        * ```python
+            letters = ['a', 'b', 'c', 'd', 'e']
+            for i, letter in enumerate(letters):
+                print(i, letter)
+            ```
 
 * List Comprehensions
     * ![list-comprehensions](./images/list_comprehensions.PNG) 

@@ -79,6 +79,19 @@
             some_list = [('a', 1), ('b', 2), ('c', 3)]
             letters, nums = zip(*some_list)
             ```
+        * ```python
+            x_coord = [23, 53, 2, -12, 95, 103, 14, -5]
+            y_coord = [677, 233, 405, 433, 905, 376, 432, 445]
+            z_coord = [4, 16, -6, -42, 3, -6, 23, -1]
+            labels = ["F", "J", "A", "Q", "Y", "B", "W", "X"]
+
+            points = []
+            for point in zip(labels, x_coord, y_coord, z_coord):
+                points.append("{}: {}, {}, {}".format(*point))
+
+            for point in points:
+                print(point)
+            ```
 
 * Enumerate
     * ![enumerate](./images/enumerate.PNG)
@@ -91,10 +104,22 @@
 
 * List Comprehensions
     * ![list-comprehensions](./images/list_comprehensions.PNG) 
+    * ```python
+        squares = [x**2 for x in range(9) if x % 2 == 0]
+        squares = [x**2 for x in range(9) if x % 2 == 0 else x + 3]
+        squares = [x**2 if x % 2 == 0 else x + 3 for x in range(9)]
+
+        names = ["Rick Sanchez", "Morty Smith", "Summer Smith", "Jerry Smith", "Beth Smith"]
+
+        first_names = [name.split(" ")[0].lower() for name in names]# write your list comprehension here
+        print(first_names)
+        ```
 
 ### Lesson 5: Functions
 
 * Lambda Expressions
+
+    * You can use lambda expressions to create anonymous functions. That is, functions that don’t have a name. They are helpful for creating quick functions that aren’t needed later in your code. This can be especially useful for higher order functions, or functions that take in other functions as arguments.
 
     * ![lambda](./images/lambda.PNG) 
     * `double = lambda x: x * 2`
@@ -102,6 +127,7 @@
 * Iterator: An object that represents a stream of data
     * The `yield` key-works is what differentiate a normal object from an iterator object
 * Generator: A function that creates an iterator
+    * Generators are a lazy way to build iterables. They are useful when the fully realized list would not fit in memory, or when the cost to calculate each list element is high and you want to do it as late as possible. But they can only be iterated over once.
 
 ```python
 def my_enumerate(iterable, start=0):
@@ -172,6 +198,14 @@ sq_iterator = (x**2 for x in range(10))  # this produces an iterator of squares
         * `from module_name import *`
             * **Do not do this**
 
+* Exceptions
+    * ```python
+        try:
+            # some code
+        except ZeroDivisionError as e:
+        # some code
+        print("ZeroDivisionError occurred: {}".format(e))
+        ```
 
 ### Lesson 7: Intro to Object-Oriented Programming
 
@@ -247,6 +281,158 @@ sq_iterator = (x**2 for x in range(10))  # this produces an iterator of squares
 * Magic methods 
     * `__init__` is one
     * `__add__` and `__repr__` are also examples
-    * Those methods let you override and customize default Python behaviour
-        * `__add__` overrides the behaviour of the plus sign
+    * Those methods let you override and customize default Python behavior
+        * `__add__` overrides the behavior of the plus sign
         * `__repr__` when the only code in a line is a variable
+
+### Extra material
+
+* **First-Class Objects**
+In Python, functions are first-class objects. This means that functions can be passed around and used as arguments, just like any other object (string, int, float, list, and so on). Consider the following three functions:
+
+* ```python
+    def say_hello(name):
+        return f"Hello {name}"
+
+    def be_awesome(name):
+        return f"Yo {name}, together we are the awesomest!"
+
+    def greet_bob(greeter_func):
+        return greeter_func("Bob")
+    ```
+
+* **Inner Functions** It’s possible to define functions inside other functions. Such functions are called inner functions. Here’s an example of a function with two inner functions:
+
+* ```python
+    def parent():
+        print("Printing from the parent() function")
+
+        def first_child():
+            print("Printing from the first_child() function")
+
+        def second_child():
+            print("Printing from the second_child() function")
+
+        second_child()
+        first_child()
+    ```
+
+    * Furthermore, the inner functions are not defined until the parent function is called. They are locally scoped to parent(): they only exist inside the parent() function as local variables. Try calling first_child(). You should get an error
+
+* **Simple Decorators** Now that you’ve seen that functions are just like any other object in Python, you’re ready to move on and see the magical beast that is the Python decorator. Let’s start with an example:
+
+* ```python
+    def my_decorator(func):
+        def wrapper():
+            print("Something is happening before the function is called.")
+            func()
+            print("Something is happening after the function is called.")
+        return wrapper
+
+    def say_whee():
+        print("Whee!")
+
+    say_whee = my_decorator(say_whee)
+    ```
+
+* ```python
+    >>> say_whee()
+    Something is happening before the function is called.
+    Whee!
+    Something is happening after the function is called.
+    ```
+* Put simply: decorators wrap a function, modifying its behavior.
+
+ * Syntactic Sugar!
+    * The way you decorated say_whee() above is a little clunky. First of all, you end up typing the name say_whee three times. In addition, the decoration gets a bit hidden away below the definition of the function.
+    * Instead, Python allows you to use decorators in a simpler way with the @ symbol, sometimes called the “pie” syntax. The following example does the exact same thing as the first decorator example:
+
+* ```python
+    def my_decorator(func):
+        def wrapper():
+            print("Something is happening before the function is called.")
+            func()
+            print("Something is happening after the function is called.")
+        return wrapper
+
+    @my_decorator
+    def say_whee():
+        print("Whee!")
+    ```
+
+    * Recall that a decorator is just a regular Python function. All the usual tools for easy reusability are available. Let’s move the decorator to its own module that can be used in many other functions.
+
+* **Decorating Functions With Arguments** 
+
+    * ```python
+            from decorators import do_twice
+
+            @do_twice
+            def greet(name):
+                print(f"Hello {name}")
+        ```
+
+    * ```python
+        def do_twice(func):
+        def wrapper_do_twice(*args, **kwargs):
+            print(args)
+            print(kwargs)
+            func(*args, **kwargs)
+            func(*args, **kwargs)
+        return wrapper_do_twice
+        ```
+
+    * There are 2 kinds of arguments in Python, one is positional arguments and other is keyword arguments, the former are specified according to their position and latter are the arguments with keyword which is the name of the argument.   
+
+    * Before looking at the variadic positional/keyword arguments, we’ll talk about the positional arguments and keyword arguments simply.
+
+    * ```python
+        # A function that shows the results of running competitions consisting of 2 to 4 runners.
+        def save_ranking(first, second, third=None, fourth=None):
+            rank = {}
+            rank[1], rank[2] = first, second
+            rank[3] = third if third is not None else 'Nobody'
+            rank[4] = fourth if fourth is not None else 'Nobody'
+            print(rank)    
+
+        # Pass the 2 positional arguments
+        save_ranking('ming', 'alice')
+        # Pass the 2 positional arguments and 1 keyword argument
+        save_ranking('alice', 'ming', third='mike')
+        # Pass the 2 positional arguments and 2 keyword arguments (But, one of them was passed as like positional argument)
+        save_ranking('alice', 'ming', 'mike', fourth='jim')
+
+        ```
+    
+    * Above function has 2 positional arguments: first, second and 2 keyword arguments: third, fourth. For positional arguments, it is not possible to omit it, and you must pass all positional arguments to the correct location for each number of arguments declared. However, for keyword arguments, you can set a default value of it when declaring a function, and if you omit the argument, the corresponding default value is entered as the value of the argument. That is, the keyword arguments can be omitted.
+
+    * ```python
+        def save_ranking(*args, **kwargs):
+            print(args)     
+            print(kwargs)
+        save_ranking('ming', 'alice', 'tom', fourth='wilson', fifth='roy')     # ('ming', 'alice', 'tom')
+        # {'fourth': 'wilson', 'fifth': 'roy'}
+        ```
+    
+    * As you can see above, we are passing the arguments which can hold arbitrary numbers of positional or keyword values. The arguments passed as positional are stored in a list called args, and the arguments passed as keyword are stored in a dict called kwargs.
+
+    * ```python
+        from functools import reduce
+
+        primes = [2, 3, 5, 7, 11, 13]
+
+        def product(*numbers):
+            p = reduce(lambda x, y: x * y, numbers)
+            return p 
+
+        product(*primes)
+        # 30030
+
+        product(primes)
+        # [2, 3, 5, 7, 11, 13]
+        ```
+
+    * **For tuple, it could be done exactly same to list, and for dict, just use ** instead of *.**
+
+
+    

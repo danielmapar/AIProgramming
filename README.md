@@ -439,6 +439,10 @@ In Python, functions are first-class objects. This means that functions can be p
 
 ### Anaconda
 
+* Install Anaconda
+    * `conda upgrade conda`
+    * `conda upgrade --all`
+
 * Anaconda is an open source distribution for Python designed for large-scale data. With Anaconda you will be able to simplify package management.
 
 * Welcome to this lesson on using Anaconda to manage packages and environments for use with Python. With Anaconda, it's simple to install the packages you'll often use in data science work. You'll also use it to create virtual environments that make working on multiple projects much less mind-twisting. Anaconda has simplified my workflow and solved a lot of issues I had dealing with packages and multiple Python versions.
@@ -512,3 +516,83 @@ In Python, functions are first-class objects. This means that functions can be p
 
     * Local install: `conda install jupyter notebook`
 
+    * To start a Jupyter notebook just run: `jupyter notebook`
+
+    * You should consider installing Notebook Conda to help manage your environments. Run the following command:
+
+        * `conda install nb_conda`
+        * ![py-conda](./images/py-conda.PNG)
+    
+    * You can shutdown the entire server by pressing control + C twice in the terminal. Again, this will immediately shutdown all the running notebooks, so make sure your work is saved!
+
+* **Notebook Interface**
+
+    * You’ll see a little box outlined in green. This is called a cell. Cells are where you write and run your code. You can also change it to render Markdown, a popular formatting syntax for writing web content. I'll cover Markdown in more detail later. In the toolbar, click “Code” to change it to Markdown and back. The little play button runs the cell, and the up and down arrows move cells up and down.
+
+    * In the "File" menu, you can download the notebook in multiple formats. You'll often want to download it as an HTML file to share with others who aren't using Jupyter. Also, you can download the notebook as a normal Python file where all the code will run like normal. The Markdown and reST formats are great for using notebooks in blogs or documentation.
+
+    * You can create math expressions in Markdown cells using LaTeX symbols. Notebooks use MathJax to render the LaTeX symbols as math symbols. To start math mode, wrap the LaTeX in dollar signs $y = mx + b$ for inline math. For a math block, use double dollar signs,
+
+        * ```
+            $$
+            y = \frac{a}{b+c}
+            $$
+            ```
+
+* **Magic keywords**
+
+    * Magic keywords are special commands you can run in cells that let you control the notebook itself or perform system calls such as changing directories. For example, you can set up matplotlib to work interactively in the notebook with `%matplotlib`.
+
+    * Magic commands are preceded with one or two percent signs (% or %%) for **line magics and cell magics, respectively. Line magics apply only to the line the magic command is written on, while cell magics apply to the whole cell.**
+
+    * **NOTE**: These magic keywords are specific to the normal Python kernel. If you are using other kernels, these most likely won't work.
+
+    * At some point, you'll probably spend some effort optimizing code to run faster. Timing how quickly your code runs is essential for this optimization. You can use the `timeit` magic command to time how long it takes for a function to run, like so:
+
+        * ![magic-timeit](./images/magic-timeit.PNG)
+    
+    * If you want to time how long it takes for a whole cell to run, you’d use `%%timeit` like so:
+
+        * ![magic-timeit2](./images/magic-timeit2.PNG)
+
+* **Embedding visualizations in notebooks**
+
+    * As mentioned before, notebooks let you embed images along with text and code. This is most useful when you’re using `matplotlib` or other plotting packages to create visualizations. You can use `%matplotlib` to set up matplotlib for interactive use in the notebook. By default figures will render in their own window. However, you can pass arguments to the command to select a specific "backend", the software that renders the image. To render figures directly in the notebook, you should use the inline backend with the command `%matplotlib inline`.
+
+    * ![magic-matplotlib](./images/magic-matplotlib.PNG)
+
+* **Debugging in the Notebook**
+
+    * With the Python kernel, you can turn on the interactive debugger using the magic command `%pdb`. When you cause an error, you'll be able to inspect the variables in the current namespace.
+
+        * ![magic-pdb](./images/magic-pdb.PNG) 
+
+* **Converting notebooks**
+
+    * Notebooks are just big JSON files with the extension `.ipynb`.
+
+    * Since notebooks are JSON, it is simple to convert them to other formats. Jupyter comes with a utility called `nbconvert` for converting to HTML, Markdown, slideshows, etc.
+
+    * For example, to convert a notebook to an HTML file, in your terminal use    
+
+        * `jupyter nbconvert --to html notebook.ipynb`
+    
+    * Converting to HTML is useful for sharing your notebooks with others who aren't using notebooks. Markdown is great for including a notebook in blogs and other text editors that accept Markdown formatting.
+
+    * Create slideshows from notebooks is one of my favorite features. The slides are created in notebooks like normal, but you'll need to designate which cells are slides and the type of slide the cell will be. In the menu bar, click View > Cell Toolbar > Slideshow to bring up the slide cell menu on each cell.
+
+    * Running the slideshow
+
+        * To create the slideshow from the notebook file, you'll need to use `nbconvert`:
+
+            * `jupyter nbconvert notebook.ipynb --to slides`
+        
+        * This just converts the notebook to the necessary files for the slideshow, but you need to serve it with an HTTP server to actually see the presentation.
+
+        * To convert it and immediately see it, use
+
+            * `jupyter nbconvert notebook.ipynb --to slides --post serve`
+        
+        * This will open up the slideshow in your browser so you can present it.
+
+### NumPy

@@ -631,3 +631,114 @@ In Python, functions are first-class objects. This means that functions can be p
     * For more details check course material and specially the `.ipynb` files
         * `8 - Mini Project - Mean Normalization and Data Separation` does a good coverage of NumPy in the real world
 
+### Panda
+
+* Pandas is a package for **data manipulation and analysis** in Python. The name Pandas is derived from the econometrics term Panel Data. Pandas incorporates two additional data structures into Python, namely Pandas Series and Pandas DataFrame. These data structures allow us to work with labeled and relational data in an easy and intuitive manner. These lessons are intended as a basic overview of Pandas and introduces some of its most important features.
+
+    * `conda list pandas` -> version 0.24
+
+* **Why use Panda?**
+    * The recent success of machine learning algorithms is partly due to the huge amounts of data that we have available to train our algorithms on. However, when it comes to data, quantity is not the only thing that matters, the quality of your data is just as important. It often happens that large datasets don’t come ready to be fed into your learning algorithms. More often than not, large datasets will often have missing values, outliers, incorrect values, etc… Having data with a lot of missing or bad values, for example, is not going to allow your machine learning algorithms to perform well. Therefore, one very important step in machine learning is to look at your data first and make sure it is well suited for your training algorithm by doing some basic data analysis. This is where Pandas come in. **Pandas Series and DataFrames are designed for fast data analysis and manipulation**, as well as being flexible and easy to use. Below are just a few features that makes Pandas an excellent package for data analysis:
+
+        * Allows the use of labels for rows and columns
+        * Can calculate rolling statistics on time series data
+        * Easy handling of NaN values
+        * Is able to load data of different formats into DataFrames
+        * Can join and merge different datasets together
+        * It integrates with NumPy and Matplotlib
+    
+    * For these and other reasons, Pandas DataFrames have become one of the most commonly used Pandas object for data analysis in Python.
+
+    * A Pandas series is a **one-dimensional array-like object that can hold many data types**, such as numbers or strings. One of the main differences between Pandas Series and NumPy ndarrays is that you can assign an **index label to each element in the Pandas Series**. In other words, you can **name the indices of your Pandas Series anything you want**. Another big difference between Pandas Series and NumPy ndarrays is that Pandas Series can hold data of different data types.
+
+        * Let's start by importing Pandas into Python. It has become a convention to import Pandas as pd, therefore, you can import Pandas by typing the following command in your Jupyter notebook: 
+            * `import pandas as pd`
+        
+        * Let's begin by creating a Pandas Series. You can create Pandas Series by using the command `pd.Series(data, index)`, where `index` is a list of index labels. Let's use a Pandas Series to store a grocery list. We will use the food items as index labels and the quantity we need to buy of each item as our data.
+
+            * eggs           30
+            * apples         6
+            * milk         Yes
+            * bread       No
+            * dtype: object
+
+        * We see that Pandas Series are displayed with the indices in the first column and the data in the second column. Notice that the data is not indexed 0 to 3 but rather it is indexed with the names of the food we put in, namely eggs, apples, etc... Also notice that the data in our Pandas Series has both integers and strings.
+
+        * Just like NumPy ndarrays, Pandas Series have attributes that allows us to get information from the series in an easy way. Let's see some of them:
+
+            * ```python
+                # We print some information about Groceries
+                print('Groceries has shape:', groceries.shape)
+                print('Groceries has dimension:', groceries.ndim)
+                print('Groceries has a total of', groceries.size, 'elements')
+                ```
+        
+        * We can also print the index labels and the data of the Pandas Series separately. This is useful if you don't happen to know what the index labels of the Pandas Series are.
+
+            * ```python
+                # We print the index and data of Groceries
+                print('The data in Groceries is:', groceries.values)
+                print('The index of Groceries is:', groceries.index)
+                ```
+        
+        * If you are dealing with a very large Pandas Series and if you are not sure whether an index label exists, you can check by using the in command
+
+            * ```python
+                # We check whether bananas is a food item (an index) in Groceries
+                x = 'bananas' in groceries
+
+                # We check whether bread is a food item (an index) in Groceries
+                y = 'bread' in groceries
+
+                # We print the results
+                print('Is bananas an index label in Groceries:', x)
+                print('Is bread an index label in Groceries:', y)
+                ```
+        
+        * Now let's look at how we can access or modify elements in a Pandas Series. One great advantage of Pandas Series is that it allows us to access data in many different ways. Elements can be accessed using index labels or numerical indices inside square brackets, [ ], similar to how we access elements in NumPy ndarrays. Since we can use numerical indices, we can use both positive and negative integers to access data from the beginning or from the end of the Series, respectively. Since we can access elements in various ways, in order to remove any ambiguity to whether we are referring to an index label or numerical index, Pandas Series have two attributes, `.loc` and `.iloc` to explicitly state what we mean. The attribute `.loc` stands for **location** and it is used to explicitly state that we are using a labeled index. Similarly, the attribute `.iloc` stands for **integer location** and it is used to explicitly state that we are using a numerical index. Let's see some examples:
+
+            * ```python
+                # We access elements in Groceries using index labels:
+
+                # We use a single index label
+                print('How many eggs do we need to buy:', groceries['eggs'])
+                print()
+
+                # we can access multiple index labels
+                print('Do we need milk and bread:\n', groceries[['milk', 'bread']]) 
+                print()
+
+                # we use loc to access multiple index labels
+                print('How many eggs and apples do we need to buy:\n', groceries.loc[['eggs', 'apples']]) 
+                print()
+
+                # We access elements in Groceries using numerical indices:
+
+                # we use multiple numerical indices
+                print('How many eggs and apples do we need to buy:\n',  groceries[[0, 1]]) 
+                print()
+
+                # We use a negative numerical index
+                print('Do we need bread:\n', groceries[[-1]]) 
+                print()
+
+                # We use a single numerical index
+                print('How many eggs do we need to buy:', groceries[0]) 
+                print()
+                # we use iloc to access multiple numerical indices
+                print('Do we need milk and bread:\n', groceries.iloc[[2, 3]]) 
+                ```
+        
+        * Pandas Series are also mutable like NumPy ndarrays, which means we can change the elements of a Pandas Series after it has been created. For example, let's change the number of eggs we need to buy from our grocery list
+
+            * ```python
+                # We display the original grocery list
+                print('Original Grocery List:\n', groceries)
+
+                # We change the number of eggs to 2
+                groceries['eggs'] = 2
+
+                # We display the changed grocery list
+                print()
+                print('Modified Grocery List:\n', groceries)
+                ```

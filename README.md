@@ -742,3 +742,277 @@ In Python, functions are first-class objects. This means that functions can be p
                 print()
                 print('Modified Grocery List:\n', groceries)
                 ```
+        
+        * We can also delete items from a Pandas Series by using the `.drop()` method. The `Series.drop(label)` method removes the given `label` from the given Series. We should note that the `Series.drop(label)` method drops elements from the Series out of place, meaning that **it doesn't change the original Series being modified**. Let's see how this works:
+
+            * ```python
+                # We display the original grocery list
+                print('Original Grocery List:\n', groceries)
+
+                # We remove apples from our grocery list. The drop function removes elements out of place
+                print()
+                print('We remove apples (out of place):\n', groceries.drop('apples'))
+
+                # When we remove elements out of place the original Series remains intact. To see this
+                # we display our grocery list again
+                print()
+                print('Grocery List after removing apples out of place:\n', groceries)
+                ```
+        
+        * We can delete items from a Pandas Series in place by setting the keyword `inplace` to `True` in the `.drop()` method. Let's see an example:
+
+            * ```python
+                # We display the original grocery list
+                print('Original Grocery List:\n', groceries)
+
+                # We remove apples from our grocery list in place by setting the inplace keyword to True
+                groceries.drop('apples', inplace = True)
+
+                # When we remove elements in place the original Series its modified. To see this
+                # we display our grocery list again
+                print()
+                print('Grocery List after removing apples in place:\n', groceries)
+                ```
+        
+        * Just like with NumPy ndarrays, we can perform element-wise arithmetic operations on Pandas Series. In this lesson we will look at arithmetic operations between **Pandas Series** and single numbers. Let's create a new Pandas Series that will hold a grocery list of just fruits.
+
+
+            * ```python
+                # We create a Pandas Series that stores a grocery list of just fruits
+                fruits= pd.Series(data = [10, 6, 3,], index = ['apples', 'oranges', 'bananas'])
+
+                # We display the fruits Pandas Series
+                print(fruits)
+                ```
+        
+        * We can now modify the data in fruits by performing basic arithmetic operations. Let's see some examples
+
+            * ```python
+                # We print fruits for reference
+                print('Original grocery list of fruits:\n ', fruits)
+
+                # We perform basic element-wise operations using arithmetic symbols
+                print()
+                print('fruits + 2:\n', fruits + 2) # We add 2 to each item in fruits
+                print()
+                print('fruits - 2:\n', fruits - 2) # We subtract 2 to each item in fruits
+                print()
+                print('fruits * 2:\n', fruits * 2) # We multiply each item in fruits by 2 
+                print()
+                print('fruits / 2:\n', fruits / 2) # We divide each item in fruits by 2
+                print()
+                ```
+        
+        * You can also apply mathematical functions from NumPy, such assqrt(x), to all elements of a Pandas Series.
+
+            * ```python
+                # We import NumPy as np to be able to use the mathematical functions
+                import numpy as np
+
+                # We print fruits for reference
+                print('Original grocery list of fruits:\n', fruits)
+
+                # We apply different mathematical functions to all elements of fruits
+                print()
+                print('EXP(X) = \n', np.exp(fruits))
+                print() 
+                print('SQRT(X) =\n', np.sqrt(fruits))
+                print()
+                print('POW(X,2) =\n',np.power(fruits,2)) # We raise all elements of fruits to the power of 2
+                ```
+        
+        * Pandas also allows us to only apply arithmetic operations on selected items in our fruits grocery list. Let's see some examples
+
+            * ```python
+                # We print fruits for reference
+                print('Original grocery list of fruits:\n ', fruits)
+                print()
+
+                # We add 2 only to the bananas
+                print('Amount of bananas + 2 = ', fruits['bananas'] + 2)
+                print()
+
+                # We subtract 2 from apples
+                print('Amount of apples - 2 = ', fruits.iloc[0] - 2)
+                print()
+
+                # We multiply apples and oranges by 2
+                print('We double the amount of apples and oranges:\n', fruits[['apples', 'oranges']] * 2)
+                print()
+
+                # We divide apples and oranges by 2
+                print('We half the amount of apples and oranges:\n', fruits.loc[['apples', 'oranges']] / 2)
+                ```
+        
+        * You can also apply arithmetic operations on Pandas Series of mixed data type provided that the arithmetic operation is defined for all data types in the Series, otherwise you will get an error. Let's see what happens when we multiply our grocery list by 2
+
+            * ```python
+                # We multiply our grocery list by 2
+                groceries * 2
+                ```
+        
+        * As we can see, in this case, since we multiplied by 2, Pandas doubles the data of each item including the strings. Pandas can do this because the multiplication operation * is defined both for numbers and strings. If you were to apply an operation that was valid for numbers but not strings, say for instance, / you will get an error. So when you have mixed data types in your Pandas Series make sure the arithmetic operations are valid on all the data types of your elements.
+
+        * ```python
+            import pandas as pd
+
+            # Create a Pandas Series that contains the distance of some planets from the Sun.
+            # Use the name of the planets as the index to your Pandas Series, and the distance
+            # from the Sun as your data. The distance from the Sun is in units of 10^6 km
+
+            distance_from_sun = [149.6, 1433.5, 227.9, 108.2, 778.6]
+
+            planets = ['Earth','Saturn', 'Mars','Venus', 'Jupiter']
+
+            # Create a Pandas Series using the above data, with the name of the planets as
+            # the index and the distance from the Sun as your data.
+            dist_planets = pd.Series(data = distance_from_sun, index = planets)
+
+            # Calculate the number of minutes it takes sunlight to reach each planet. You can
+            # do this by dividing the distance from the Sun for each planet by the speed of light.
+            # Since in the data above the distance from the Sun is in units of 10^6 km, you can
+            # use a value for the speed of light of c = 18, since light travels 18 x 10^6 km/minute.
+            time_light = dist_planets / 18
+
+            # Use Boolean indexing to select only those planets for which sunlight takes less
+            # than 40 minutes to reach them.
+            close_planets = dist_planets[time_light< 40]
+            ```
+    
+    * **Pandas DataFrames** are two-dimensional data structures with labeled rows and columns, that can hold many data types. If you are familiar with Excel, you can think of Pandas DataFrames as being similar to a spreadsheet. We can create Pandas DataFrames manually or by loading data from a file. In these lessons we will start by learning how to create Pandas DataFrames manually from dictionaries and later we will see how we can load data into a DataFrame from a data file.
+
+    * We will start by creating a DataFrame manually from a dictionary of Pandas Series. In this case the first step is to create the dictionary of Pandas Series. After the dictionary is created we can then pass the dictionary to the `pd.DataFrame()` function.
+
+    * We will create a dictionary that contains items purchased by two people, Alice and Bob, on an online store. The Pandas Series will use the price of the items purchased as data, and the purchased items will be used as the index labels to the Pandas Series. Let's see how this done in code:
+
+        * ```python
+            # We import Pandas as pd into Python
+            import pandas as pd
+
+            # We create a dictionary of Pandas Series 
+            items = {'Bob' : pd.Series(data = [245, 25, 55], index = ['bike', 'pants', 'watch']),
+                    'Alice' : pd.Series(data = [40, 110, 500, 45], index = ['book', 'glasses', 'bike', 'pants'])}
+
+            # We print the type of items to see that it is a dictionary
+            print(type(items))
+            ```
+        
+        * ![data_frame](./images/data_frame.png)
+    
+    * Now that we have a dictionary, we are ready to create a DataFrame by passing it to the `pd.DataFrame()` function. We will create a DataFrame that could represent the shopping carts of various users, in this case we have only two users, Alice and Bob.
+
+        * There are several things to notice here that are worth pointing out. We see that DataFrames are displayed in tabular form, much like an Excel spreadsheet, with the labels of rows and columns in bold. Also notice that the row labels of the DataFrame are built from the union of the index labels of the two Pandas Series we used to construct the dictionary. And the column labels of the DataFrame are taken from the keys of the dictionary. Another thing to notice is that the columns are arranged alphabetically and not in the order given in the dictionary. We will see later that this won't happen when we load data into a DataFrame from a data file. The last thing we want to point out is that we see some NaN values appear in the DataFrame. NaN stands for Not a Number, and is Pandas way of indicating that it doesn't have a value for that particular row and column index. For example, if we look at the column of Alice, we see that it has NaN in the watch index. You can see why this is the case by looking at the dictionary we created at the beginning. We clearly see that the dictionary has no item for Alice labeled watches. So whenever a DataFrame is created, if a particular column doesn't have values for a particular row index, Pandas will put a NaN value there. If we were to feed this data into a machine learning algorithm we will have to remove these NaN values first. In a later lesson we will learn how to deal with NaN values and clean our data. For now, we will leave these values in our DataFrame.
+
+        * In the above example we created a Pandas DataFrame from a dictionary of Pandas Series that had clearly defined indexes. If we don't provide index labels to the Pandas Series, Pandas will use numerical row indexes when it creates the DataFrame. Let's see an example:
+
+        * ```python
+            # We create a dictionary of Pandas Series without indexes
+            data = {'Bob' : pd.Series([245, 25, 55]),
+                    'Alice' : pd.Series([40, 110, 500, 45])}
+
+            # We create a DataFrame
+            df = pd.DataFrame(data)
+
+            # We display the DataFrame
+            df
+            ```
+        
+        * We can see that Pandas indexes the rows of the DataFrame starting from 0, just like NumPy indexes ndarrays.
+
+        * Now, just like with Pandas Series we can also extract information from DataFrames using attributes. Let's print some information from our `shopping_carts` DataFrame
+
+            * ```python
+                # We print some information about shopping_carts
+                print('shopping_carts has shape:', shopping_carts.shape)
+                print('shopping_carts has dimension:', shopping_carts.ndim)
+                print('shopping_carts has a total of:', shopping_carts.size, 'elements')
+                print()
+                print('The data in shopping_carts is:\n', shopping_carts.values)
+                print()
+                print('The row index in shopping_carts is:', shopping_carts.index)
+                print()
+                print('The column index in shopping_carts is:', shopping_carts.columns)
+                ```
+
+        * When creating the shopping_carts DataFrame we passed the entire dictionary to the `pd.DataFrame()` function. However, there might be cases when you are only interested in a subset of the data. Pandas allows us to select which data we want to put into our DataFrame by means of the keywords columns and index. Let's see some examples:
+
+            * ```python
+                # We Create a DataFrame that only has Bob's data
+                bob_shopping_cart = pd.DataFrame(items, columns=['Bob'])
+
+                # We display bob_shopping_cart
+                bob_shopping_cart
+
+                # We Create a DataFrame that only has selected items for both Alice and Bob
+                sel_shopping_cart = pd.DataFrame(items, index = ['pants', 'book'])
+
+                # We display sel_shopping_cart
+                sel_shopping_cart
+
+                # We Create a DataFrame that only has selected items for Alice
+                alice_sel_shopping_cart = pd.DataFrame(items, index = ['glasses', 'bike'], columns = ['Alice'])
+
+                # We display alice_sel_shopping_cart
+                alice_sel_shopping_cart
+                ```
+        
+        * You can also manually create DataFrames from a dictionary of lists (arrays). The procedure is the same as before, we start by creating the dictionary and then passing the dictionary to the `pd.DataFrame()` function. In this case, however, all the lists (arrays) in the dictionary must be of the same length. Let' see an example:
+
+            * ```python
+                # We create a dictionary of lists (arrays)
+                data = {'Integers' : [1,2,3],
+                        'Floats' : [4.5, 8.2, 9.6]}
+
+                # We create a DataFrame 
+                df = pd.DataFrame(data)
+
+                # We display the DataFrame
+                df
+                ```
+        
+        * Notice that since the data dictionary we created doesn't have label indices, Pandas automatically uses numerical row indexes when it creates the DataFrame. We can however, put labels to the row index by using the index keyword in the `pd.DataFrame()` function. Let's see an example
+
+            * ```python
+                # We create a list of Python dictionaries
+                items2 = [{'bikes': 20, 'pants': 30, 'watches': 35}, 
+                        {'watches': 10, 'glasses': 50, 'bikes': 15, 'pants':5}]
+
+                # We create a DataFrame 
+                store_items = pd.DataFrame(items2)
+
+                # We display the DataFrame
+                store_items
+                ```
+
+            * ![data_frame](./images/data_frame2.png)
+        
+        * Again, notice that since the items2 dictionary we created doesn't have label indices, Pandas automatically uses numerical row indexes when it creates the DataFrame. As before, we can put labels to the row index by using the index keyword in the `pd.DataFrame()` function. Let's assume we are going to use this DataFrame to hold the number of items a particular store has in stock. So, we will label the row indices as store 1 and store 2.
+
+            * ![data_frame](./images/data_frame3.png)
+        
+        * We can access elements in Pandas DataFrames in many different ways. In general, we can access rows, columns, or individual elements of the DataFrame by using the row and column labels. We will use the same `store_items` DataFrame created in the previous lesson. Let's see some examples:
+
+            * ```python
+                # We import Pandas as pd into Python
+                import pandas as pd
+
+                # We create a list of Python dictionaries
+                items2 = [{'bikes': 20, 'pants': 30, 'watches': 35}, 
+                        {'watches': 10, 'glasses': 50, 'bikes': 15, 'pants':5}]
+
+                # We create a DataFrame  and provide the row index
+                store_items = pd.DataFrame(items2, index = ['store 1', 'store 2'])
+                
+                # We print the store_items DataFrame
+                print(store_items)
+
+                # We access rows, columns and elements using labels
+                print()
+                print('How many bikes are in each store:\n', store_items[['bikes']])
+                print()
+                print('How many bikes and pants are in each store:\n', store_items[['bikes', 'pants']])
+                print()
+                print('What items are in Store 1:\n', store_items.loc[['store 1']])
+                print()
+                print('How many bikes are in Store 2:', store_items['bikes']['store 2'])
+                ```

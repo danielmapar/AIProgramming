@@ -1002,7 +1002,7 @@ In Python, functions are first-class objects. This means that functions can be p
 
                 # We create a DataFrame  and provide the row index
                 store_items = pd.DataFrame(items2, index = ['store 1', 'store 2'])
-                
+
                 # We print the store_items DataFrame
                 print(store_items)
 
@@ -1178,7 +1178,7 @@ In Python, functions are first-class objects. This means that functions can be p
     
     * Notice that the `.dropna()` method eliminates (drops) the rows or columns with NaN values out of place. This means that the original DataFrame is not modified. You can always remove the desired rows or columns in place by setting the keyword `inplace = True` inside the `dropna()` function.
 
-    * Now, instead of eliminating NaN values, we can replace them with suitable values. We could choose for example to replace all `NaN` values with the value 0. We can do this by using the `.fillna()` method as shown below.
+    * Now, instead of eliminating `NaN` values, we can replace them with suitable values. We could choose for example to replace all `NaN` values with the value 0. We can do this by using the `.fillna()` method as shown below.
 
         * ```python
             # We replace all NaN values with 0
@@ -1222,4 +1222,107 @@ In Python, functions are first-class objects. This means that functions can be p
         * ```python
             # We replace NaN values by using linear interpolation using column values
             store_items.interpolate(method = 'linear', axis = 0)
+            ```
+
+    * ```python
+        import pandas as pd
+        import numpy as np
+
+        pd.set_option('precision', 1)
+
+        books = pd.Series(data = ['Great Expectations', 'Of Mice and Men', 'Romeo and Juliet', 'The Time Machine', 'Alice in Wonderland' ])
+        authors = pd.Series(data = ['Charles Dickens', 'John Steinbeck', 'William Shakespeare', ' H. G. Wells', 'Lewis Carroll' ])
+        user_1 = pd.Series(data = [3.2, np.nan ,2.5])
+        user_2 = pd.Series(data = [5., 1.3, 4.0, 3.8])
+        user_3 = pd.Series(data = [2.0, 2.3, np.nan, 4])
+        user_4 = pd.Series(data = [4, 3.5, 4, 5, 4.2])
+
+        dat = {'Book Title' : books,
+            'Author' : authors,
+            'User 1' : user_1,
+            'User 2' : user_2,
+            'User 3' : user_3,
+            'User 4' : user_4}
+
+        book_ratings = pd.DataFrame(dat)
+
+        print(book_ratings.mean())
+        print()
+
+        book_ratings.fillna(book_ratings.mean(), inplace = True)
+
+        print(book_ratings)
+        ```
+    
+    * In machine learning you will most likely use databases from many sources to train your learning algorithms. Pandas allows us to load databases of different formats into DataFrames. One of the most popular data formats used to store databases is csv. CSV stands for Comma Separated Values and offers a simple format to store data. We can load CSV files into Pandas DataFrames using the pd.read_csv() function. Let's load Google stock data into a Pandas DataFrame. The GOOG.csv file contains Google stock data from 8/19/2004 till 10/13/2017 taken from Yahoo Finance.
+
+    * ```python
+        import pandas as pd
+
+        # We load Google stock data in a DataFrame
+        Google_stock = pd.read_csv('./GOOG.csv')
+
+        # We print some information about Google_stock
+        print('Google_stock is of type:', type(Google_stock))
+        print('Google_stock has shape:', Google_stock.shape)
+        ```
+
+    * We see that we have loaded the GOOG.csv file into a Pandas DataFrame and it consists of 3,313 rows and 7 columns. Now let's look at the stock data
+
+    * We see that it is quite a large dataset and that Pandas has automatically assigned numerical row indices to the DataFrame. Pandas also used the labels that appear in the data in the CSV file to assign the column labels.
+
+    * When dealing with large datasets like this one, it is often useful just to take a look at the first few rows of data instead of the whole dataset. We can take a look at the first 5 rows of data using the `.head()` method, as shown below: ```Google_stock.head()```
+
+    * We can also optionally use `.head(N)` or `.tail(N)` to display the first and last N rows of data, respectively.
+
+    * Let's do a quick check to see whether we have any `NaN` values in our dataset. To do this, we will use the `.isnull()` method followed by the `.any()` method to check whether any of the columns contain `NaN` values.
+
+        * ```python
+            Google_stock.isnull().any()
+            ```
+    
+    * We see that we have no NaN values.
+
+    * When dealing with large datasets, it is often useful to get statistical information from them. Pandas provides the `.describe()` method to get descriptive statistics on each column of the DataFrame. Let's see how this works:
+
+        * ```python
+            # We get descriptive statistics on our stock data
+            Google_stock.describe()
+            ```
+    
+    * If desired, we can apply the .describe() method on a single column as shown below: ```Google_stock['Adj Close'].describe()```
+
+    * Similarly, you can also look at one statistic by using one of the many statistical functions Pandas provides. Let's look at some examples:
+
+        * ```python
+            # We print information about our DataFrame  
+            print()
+            print('Maximum values of each column:\n', Google_stock.max())
+            print()
+            print('Minimum Close value:', Google_stock['Close'].min())
+            print()
+            print('Average value of each column:\n', Google_stock.mean())
+            ```
+    
+    * Another important statistical measure is data correlation. Data correlation can tell us, for example, if the data in different columns are correlated. We can use the .corr() method to get the correlation between different columns, as shown below:
+
+        * ```python
+            # We display the correlation between columns
+            Google_stock.corr()
+            ```
+    
+    * A correlation value of 1 tells us there is a high correlation and a correlation of 0 tells us that the data is not correlated at all.
+
+    * We will end this Introduction to Pandas by taking a look at the `.groupby()` method. The `.groupby()` method allows us to group data in different ways. Let's see how we can group data to get different types of information. For the next examples we are going to load fake data about a fictitious company.
+
+    * We see that the data contains information for the year 1990 through 1992. For each year we see name of the employees, the department they work for, their age, and their annual salary. Now, let's use the `.groupby()` method to get information.
+
+    * Let's calculate how much money the company spent in salaries each year. To do this, we will group the data by Year using the `.groupby()` method and then we will add up the salaries of all the employees by using the `.sum()` method.
+
+        * ```python
+            # We display the total amount of money spent in salaries each year
+            data.groupby(['Year'])['Salary'].sum()
+
+            # We display the total salary each employee received in all the years they worked for the company
+            data.groupby(['Name'])['Salary'].sum()
             ```

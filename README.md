@@ -1016,3 +1016,210 @@ In Python, functions are first-class objects. This means that functions can be p
                 print()
                 print('How many bikes are in Store 2:', store_items['bikes']['store 2'])
                 ```
+            
+            * ![data_frame](./images/data_frame4.PNG)
+    
+    * It is important to know that when accessing individual elements in a DataFrame, as we did in the last example above, the labels should always be provided with the column label first, i.e. in the form `dataframe[column][row]`. For example, when retrieving the number bikes in store 2, we first used the column label bikes and then the row label store 2. If you provide the row label first you will get an error.
+
+    * We can also modify our DataFrames by adding rows or columns. Let's start by learning how to add new columns to our DataFrames. Let's suppose we decided to add shirts to the items we have in stock at each store. To do this, we will need to add a new column to our `store_items` DataFrame indicating how many shirts are in each store. Let's do that:
+
+        * ```python
+            # We add a new column named shirts to our store_items DataFrame indicating the number of
+            # shirts in stock at each store. We will put 15 shirts in store 1 and 2 shirts in store 2
+            store_items['shirts'] = [15,2]
+
+            # We display the modified DataFrame
+            store_items
+            ```
+    
+    * Suppose now, that you opened a new store and you need to add the number of items in stock of that new store into your DataFrame. We can do this by adding a new row to the `store_items` Dataframe. To add rows to our DataFrame we first have to create a new Dataframe and then append it to the original DataFrame. Let's see how this works
+
+        * ```python
+            # We create a dictionary from a list of Python dictionaries that will number of items at the new store
+            new_items = [{'bikes': 20, 'pants': 30, 'watches': 35, 'glasses': 4}]
+
+            # We create new DataFrame with the new_items and provide and index labeled store 3
+            new_store = pd.DataFrame(new_items, index = ['store 3'])
+
+            # We display the items at the new store
+            new_store
+
+            # We append store 3 to our store_items DataFrame
+            store_items = store_items.append(new_store, sort=False)
+
+            # We display the modified DataFrame
+            store_items
+            ```
+    
+    * Notice that by appending a new row to the DataFrame, the columns have been put in alphabetical order.
+
+    * We can also add new columns of our DataFrame by using only data from particular rows in particular columns. For example, suppose that you want to stock stores 2 and 3 with new watches and you want the quantity of the new watches to be the same as the watches already in stock for those stores. Let's see how we can do this
+
+        * ```python
+            # We add a new column using data from particular rows in the watches column
+            store_items['new watches'] = store_items['watches'][1:]
+
+            # We display the modified DataFrame
+            store_items
+            ```
+
+        * ![data_frame](./images/data_frame5.PNG)
+    
+
+    * It is also possible, to insert new columns into the DataFrames anywhere we want. The `dataframe.insert(loc,label,data)` method allows us to insert a new column in the dataframe at location loc, with the given column label, and given data. Let's add new column named shoes right before the suits column. Since suits has numerical index value 4 then we will use this value as loc. Let's see how this works:
+
+        * ```python
+            # We insert a new column with label shoes right before the column with numerical index 4
+            store_items.insert(4, 'shoes', [8,5,0])
+
+            # we display the modified DataFrame
+            store_items
+            ```
+    
+    * Just as we can add rows and columns we can also delete them. To delete rows and columns from our DataFrame we will use the `.pop()` and `.drop()` methods. The `.pop()` method only allows us to delete columns, while the `.drop()` method can be used to delete both rows and columns by use of the axis keyword. Let's see some examples
+
+        * ```python
+            # We remove the new watches column
+            store_items.pop('new watches')
+
+            # we display the modified DataFrame
+            store_items
+            ```
+
+        * ```python
+            # We remove the watches and shoes columns
+            store_items = store_items.drop(['watches', 'shoes'], axis = 1)
+
+            # we display the modified DataFrame
+            store_items
+            ```
+    
+    * Sometimes we might need to change the row and column labels. Let's change the bikes column label to hats using the `.rename()` method
+
+        * ```python
+            # We change the column label bikes to hats
+            store_items = store_items.rename(columns = {'bikes': 'hats'})
+
+            # we display the modified DataFrame
+            store_items
+
+            # We change the row label from store 3 to last store
+            store_items = store_items.rename(index = {'store 3': 'last store'})
+
+            # we display the modified DataFrame
+            store_items
+            ```
+    * You can also change the index to be one of the columns in the DataFrame.
+
+        * ```python
+            # We change the row index to be the data in the pants column
+            store_items = store_items.set_index('pants')
+
+            # we display the modified DataFrame
+            store_items
+            ```
+    
+    * As mentioned earlier, before we can begin training our learning algorithms with large datasets, we usually need to clean the data first. This means we need to have a method for detecting and correcting errors in our data. While any given dataset can have many types of bad data, such as outliers or incorrect values, the type of bad data we encounter almost always is missing values. As we saw earlier, Pandas assigns `NaN` values to missing data. In this lesson we will learn how to detect and deal with `NaN` values.
+
+    * We will begin by creating a DataFrame with some `NaN` values in it.
+
+        * ```python
+            # We create a list of Python dictionaries
+            items2 = [{'bikes': 20, 'pants': 30, 'watches': 35, 'shirts': 15, 'shoes':8, 'suits':45},
+            {'watches': 10, 'glasses': 50, 'bikes': 15, 'pants':5, 'shirts': 2, 'shoes':5, 'suits':7},
+            {'bikes': 20, 'pants': 30, 'watches': 35, 'glasses': 4, 'shoes':10}]
+
+            # We create a DataFrame  and provide the row index
+            store_items = pd.DataFrame(items2, index = ['store 1', 'store 2', 'store 3'])
+
+            # We display the DataFrame
+            store_items
+            ```
+    
+    * We can clearly see that the DataFrame we created has 3 `NaN` values: one in store 1 and two in store 3. However, in cases where we load very large datasets into a DataFrame, possibly with millions of items, the number of `NaN` values is not easily visualized. For these cases, we can use a combination of methods to count the number of `NaN` values in our data. The following example combines the `.isnull()` and the `sum()` methods to count the number of NaN values in our DataFrame
+
+        * ```python
+            # We count the number of NaN values in store_items
+            x =  store_items.isnull().sum().sum()
+
+            # We print x
+            print('Number of NaN values in our DataFrame:', x)
+            ```
+
+    * In the above example, the `.isnull()` method returns a Boolean DataFrame of the same size as `store_items` and indicates with True the elements that have NaN values and with False the elements that are not. Let's see an example:
+
+        * ```python 
+            store_items.isnull()
+            ```
+
+    * In Pandas, logical True values have numerical value 1 and logical False values have numerical value 0. Therefore, we can count the number of NaN values by counting the number of logical True values. In order to count the total number of logical True values we use the .sum() method twice. We have to use it twice because the first sum returns a Pandas Series with the sums of logical True values along columns, as we see below: ```store_items.isnull().sum()```
+
+    * The second sum will then add up the 1s in the above Pandas Series.
+
+    * Instead of counting the number of NaN values we can also do the opposite, we can count the number of non-NaN values. We can do this by using the `.count()` method as shown below:
+
+        * ```python
+            # We print the number of non-NaN values in our DataFrame
+            print()
+            print('Number of non-NaN values in the columns of our DataFrame:\n', store_items.count())
+            ```
+    
+    * Now that we learned how to know if our dataset has any `NaN` values in it, the next step is to decide what to do with them. In general we have two options, we can either delete or replace the `NaN` values. In the following examples we will show you how to do both.
+
+    * We will start by learning how to eliminate rows or columns from our DataFrame that contain any `NaN` values. The `.dropna(axis)` method eliminates any rows with `NaN` values when `axis = 0` is used and will eliminate any columns with `NaN` values when `axis = 1` is used. Let's see some examples
+
+        * ```python
+            # We drop any rows with NaN values
+            store_items.dropna(axis = 0)
+
+            # We drop any columns with NaN values
+            store_items.dropna(axis = 1)
+            ```
+    
+    * Notice that the `.dropna()` method eliminates (drops) the rows or columns with NaN values out of place. This means that the original DataFrame is not modified. You can always remove the desired rows or columns in place by setting the keyword `inplace = True` inside the `dropna()` function.
+
+    * Now, instead of eliminating NaN values, we can replace them with suitable values. We could choose for example to replace all `NaN` values with the value 0. We can do this by using the `.fillna()` method as shown below.
+
+        * ```python
+            # We replace all NaN values with 0
+            store_items.fillna(0)
+            ```
+    
+    * We can also use the `.fillna()` method to replace NaN values with previous values in the DataFrame, this is known as forward filling. When replacing NaN values with forward filling, we can use previous values taken from columns or rows. The `.fillna(method = 'ffill', axis)` will use the forward filling (ffill) method to replace NaN values using the previous known value along the given axis. Let's see some examples:
+
+        * ```python
+            # We replace NaN values with the previous value in the column
+            store_items.fillna(method = 'ffill', axis = 0)
+            ```
+    
+    * Notice that the two NaN values in store 3 have been replaced with previous values in their columns. However, notice that the NaN value in store 1 didn't get replaced. That's because there are no previous values in this column, since the NaN value is the first value in that column. However, if we do forward fill using the previous row values, this won't happen. Let's take a look:
+
+        * ```python
+            # We replace NaN values with the previous value in the row
+            store_items.fillna(method = 'ffill', axis = 1)
+            ```
+    
+    * We see that in this case all the NaN values have been replaced with the previous row values.
+
+    * Similarly, you can choose to replace the NaN values with the values that go after them in the DataFrame, this is known as backward filling. The `.fillna(method = 'backfill', axis)` will use the backward filling (backfill) method to replace NaN values using the next known value along the given axis. Just like with forward filling we can choose to use row or column values. Let's see some examples:
+
+        * ```python
+            # We replace NaN values with the next value in the column
+            store_items.fillna(method = 'backfill', axis = 0)
+            ```
+    
+    * Notice that the `NaN` value in store 1 has been replaced with the next value in its column. However, notice that the two NaN values in store 3 didn't get replaced. That's because there are no next values in these columns, since these NaN values are the last values in those columns. However, if we do backward fill using the next row values, this won't happen. Let's take a look:
+
+        * ```python
+            # We replace NaN values with the next value in the row
+            store_items.fillna(method = 'backfill', axis = 1)
+            ```
+    
+    * Notice that the `.fillna()` method replaces (fills) the NaN values out of place. This means that the original DataFrame is not modified. You can always replace the NaN values in place by setting the keyword `inplace = True` inside the `fillna()` function.
+
+    * We can also choose to replace `NaN` values by using different interpolation methods. For example, the `.interpolate(method = 'linear', axis)` method will use linear interpolation to replace `NaN` values using the values along the given axis. Let's see some examples:
+
+        * ```python
+            # We replace NaN values by using linear interpolation using column values
+            store_items.interpolate(method = 'linear', axis = 0)
+            ```

@@ -1,4 +1,4 @@
-# Short Answer Grader
+# Introduction to Neural Networks
 
 * Basics of Netural Networks
 
@@ -217,6 +217,8 @@
         * By ensuring that it is always -1 to 1, you can multiply as much as you want (Negative feedback)
     
     * Because predictions look just to the previous input (previous prediction) it has really short term memory, then it does not use the information from further back.
+        * This is called the "Vanishing Gradient Problem". The Gradient exponentially decays as its backpropagated 
+        * ![vanish-gradient-problem](./images/vanishing-gradient-problem.png)
 
     * ![rnn3](./images/rnn3.png) 
 
@@ -259,3 +261,5 @@
             * Ignore things that are not immediatly relevant. So they sat aside and dont cloud the prediction moving forward 
         
         * Sequential patterns works really well
+
+    

@@ -1326,3 +1326,41 @@ In Python, functions are first-class objects. This means that functions can be p
             # We display the total salary each employee received in all the years they worked for the company
             data.groupby(['Name'])['Salary'].sum()
             ```
+
+
+### Matplotlib
+
+* **Univariate Visualization**: Visualization of single variables
+    * Bar charts for qualitative variables
+    * Histograms for quantitative variables
+
+    * What is Tidy Data?
+
+        * In this course, it is expected that your data is organized in some kind of tidy format. In short, a tidy dataset is a tabular dataset where:
+
+            * each variable is a column
+            * each observation is a row
+            * each type of observational unit is a table
+        
+        * The first three images below depict a tidy dataset. This tidy dataset is in the field of healthcare and has two tables: one for patients (with their patient ID, name, and age) and one for treatments (with patient ID, what drug that patient is taking, and the dose of that drug).
+
+            * ![tidy-data-one](./images/tidy-data-one.PNG)
+            * ![tidy-data-two](./images/tidy-data-two.PNG)
+            * ![tidy-data-three](./images/tidy-data-three.PNG)
+        
+        * The next image depicts the same data but in one representation of a non-tidy format (there are other possible non-tidy representations). The Drug A, Drug B, and Drug C columns should form one 'Drug' column, since this is one variable. The entire table should be separated into two tables: a patients table and a treatments table.
+
+            * ![tidy-data-four](./images/tidy-data-four.PNG)
+        
+        * While the data provided to you in the course will all be tidy, in practice, you may need to perform tidying work before exploration. You should be comfortable with reshaping your data or perform transformations to split or combine features in your data, resulting in new data columns. This work should be performed in the wrangling stage of the data analysis process, so if you need to know more about these operations, it is recommended that you refer back to the data wrangling content from earlier in the program.
+
+        * This is also not to say that tidy data is the only useful form that data can take. In fact, as you work with a dataset, you might need to summarize it in a non-tidy form in order to generate appropriate visualizations. You'll see one example of this in the bivariate plotting lesson, where categorical counts need to put into a matrix form in order to create a heat map.
+
+    * Bar charts for qualitative variables
+        * ![qualitative_variables](./images/qualitative_variables.PNG)
+        * ![qualitative_variables2](./images/qualitative_variables2.PNG)
+        * ![nominal_data](./images/nominal_data.PNG)
+            * Which category is the most common, and how the rest of the categories compare 
+        * ![ordinal_data](./images/ordinal_data.PNG)
+            * It is more important to know if the most common categories are lower or higher in the spectrum, rather than which label is the most frequent 
+            * ![ordinal_data2](./images/ordinal_data2.PNG)

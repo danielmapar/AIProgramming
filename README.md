@@ -2606,5 +2606,11 @@ In Python, functions are first-class objects. This means that functions can be p
     * ![nn78](./images/nn78.png)
 
         * We will check next how to deal with non linear models.
+    
+    * ![nn79](./images/nn79.png)
+
+    * ![nn80](./images/nn80.png)
+
+        * We will create a probability function to cover that
         
 

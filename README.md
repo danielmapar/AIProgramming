@@ -2604,5 +2604,7 @@ In Python, functions are first-class objects. This means that functions can be p
         * For correctly classied points, Gradient Descent is telling the line to move away. 
     
     * ![nn78](./images/nn78.png)
+
+        * We will check next how to deal with non linear models.
         
 

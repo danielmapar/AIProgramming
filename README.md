@@ -1356,7 +1356,13 @@ In Python, functions are first-class objects. This means that functions can be p
 
         * This is also not to say that tidy data is the only useful form that data can take. In fact, as you work with a dataset, you might need to summarize it in a non-tidy form in order to generate appropriate visualizations. You'll see one example of this in the bivariate plotting lesson, where categorical counts need to put into a matrix form in order to create a heat map.
 
-    * Bar charts for qualitative variables
+    * Qualitative variable
+        * Qualitative. Qualitative variables take on values that are **names or labels**. The color of a ball (e.g., red, green, blue) or the breed of a dog (e.g., collie, shepherd, terrier) would be examples of qualitative or categorical variables.
+    
+    * Quantitative variable
+        * Quantitative. Quantitative variables are **numeric**. They represent a measurable quantity. For example, when we speak of the population of a city, we are talking about the number of people in the city - a measurable attribute of the city. Therefore, population would be a quantitative variable.
+
+    * Bar charts for **qualitative** variables
         * Quantitative data analysis, which deals with numbers.
         * Qualitative data analysis, which deals with text or pictures.
         * ![qualitative_variables](./images/qualitative_variables.PNG)
@@ -1366,3 +1372,1237 @@ In Python, functions are first-class objects. This means that functions can be p
         * ![ordinal_data](./images/ordinal_data.PNG)
             * It is more important to know if the most common categories are lower or higher in the spectrum, rather than which label is the most frequent 
             * ![ordinal_data2](./images/ordinal_data2.PNG)
+    
+    * **Histograms**
+        * A histogram is used to plot the distribution of a numeric variable. It's the **quantitative** version of the bar chart. However, rather than plot one bar for each unique numeric value, values are grouped into continuous bins, and one bar for each bin is plotted depicting the number. For instance, using the default settings for matplotlib's hist function:
+
+            * `bin_edges = np.arange(0, df['num_var'].max()+1, 1)`
+            * `plt.hist(data = df, x = 'num_var', bins = bin_edges)`
+
+        * When creating histograms, it's useful to play around with different bin widths to see what represents the data best. Too many bins, and you may see too much noise that interferes with identification of the underlying signal. Too few bins, and you may not be able to see the true signal in the first place.
+
+            * ```python
+                plt.figure(figsize = [10, 5]) # larger figure size for subplots
+
+                # histogram on left, example of too-large bin size
+                plt.subplot(1, 2, 1) # 1 row, 2 cols, subplot 1
+                bin_edges = np.arange(0, df['num_var'].max()+4, 4)
+                plt.hist(data = df, x = 'num_var', bins = bin_edges)
+
+                # histogram on right, example of too-small bin size
+                plt.subplot(1, 2, 2) # 1 row, 2 cols, subplot 2
+                bin_edges = np.arange(0, df['num_var'].max()+1/4, 1/4)
+                plt.hist(data = df, x = 'num_var', bins = bin_edges)
+                ```
+        
+        * Scales and Transformations
+            * Certain data distributions will find themselves amenable to scale transformations. The most common example of this is data that follows an approximately log-normal distribution. This is data that, in their natural units, can look highly skewed: lots of points with low values, with a very long tail of data points with large values. However, after applying a logarithmic transform to the data, the data will follow a normal distribution. (If you need a refresher on the logarithm function, check out this lesson on Khan Academy.)
+
+            * ```python
+                plt.figure(figsize = [10, 5])
+
+                # left histogram: data plotted in natural units
+                plt.subplot(1, 2, 1)
+                bin_edges = np.arange(0, data.max()+100, 100)
+                plt.hist(data, bins = bin_edges)
+                plt.xlabel('values')
+
+                # right histogram: data plotted after direct log transformation
+                plt.subplot(1, 2, 2)
+                log_data = np.log10(data) # direct data transform
+                log_bin_edges = np.arange(0.8, log_data.max()+0.1, 0.1)
+                plt.hist(log_data, bins = log_bin_edges)
+                plt.xlabel('log(values)')
+                ```
+        
+        * If you want to use a different transformation that's not available in xscale, then you'll have to perform some feature engineering. In cases like this, we want to be systematic by writing a function that applies both the transformation and its inverse. The inverse will be useful in cases where we specify values in their transformed units and need to get the natural units back. For the purposes of demonstration, let's say that we want to try plotting the above data on a square-root transformation. (Perhaps the numbers represent areas, and we think it makes sense to model the data on a rough estimation of radius, length, or some other 1-d dimension.) We can create a visualization on this transformed scale like this:
+
+            * ```python
+                def sqrt_trans(x, inverse = False):
+                    """ transformation helper function """
+                    if not inverse:
+                        return np.sqrt(x)
+                    else:
+                        return x ** 2
+
+                bin_edges = np.arange(0, sqrt_trans(data.max())+1, 1)
+                plt.hist(data.apply(sqrt_trans), bins = bin_edges)
+                tick_locs = np.arange(0, sqrt_trans(data.max())+10, 10)
+                plt.xticks(tick_locs, sqrt_trans(tick_locs, inverse = True).astype(int))
+                ```
+    
+    * For quantitative data use a Histogram
+    * For qualitative data use a Bar Chart
+        * Absolute vs relative frequence
+    
+    * Bivariable visualization
+        * Visualizations of two variables
+    
+    * Scatterplots
+        * For quantitative variables vs quantitative variables
+            * ![quantvsquant](./images/quantvsquant.png)
+        * We want to quantify the correlation between two variables, for that we use a correlation coefficient
+            * example: Person Correlation
+                * Statistic quantifying the strength of linear correlation between two numeric variables
+                * The scale goes from -1 to 1  (changes on one variable correlated to changes on another variable)
+                    * As close to 1, it shows a that when one variable increases, the other variable increases as well
+                    * As close to -1, it shows that as one variable increases, the other variables decreases
+                    * Values close to 0 indicate a weeker relationship 
+            * As you play with the scale of your graph, you may find a strong correlation. That could be a positive situation to do some linear regression on those variables
+                * ![correlation-linear](./images/correlation-linear.png)
+                * `plt.scatter(data = df, x = 'disc_var1', y = 'disc_var2')`
+        * Transparency: Each point has a different color density 
+        * Jitter: Adds a small amount of random noise around each point 
+        
+
+    * Violin plots
+        * For quantitative variables vs qualitative variables
+
+    * Cluster bar charts
+        * Qualitative vs qualitative 
+
+    * ![data-types](./images/data-types.png) 
+
+    * **Heat Maps**
+        * Good for quantitative variables vs quantitative variables
+        * Good for discrete variables vs. discrete variables 
+        * Good alternative to transparency for a lot of data
+        * Bin sizes are important
+        * A heat map is a 2-d version of the histogram that can be used as an alternative to a scatterplot. Like a scatterplot, the values of the two numeric variables to be plotted are placed on the plot axes. Similar to a histogram, the plotting area is divided into a grid and the number of points in each grid rectangle is added up. Since there won't be room for bar heights, counts are indicated instead by grid cell color. A heat map can be implemented with Matplotlib's hist2d function.
+        * ```python
+            plt.figure(figsize = [12, 5])
+
+            # left plot: scatterplot of discrete data with jitter and transparency
+            plt.subplot(1, 2, 1)
+            sb.regplot(data = df, x = 'disc_var1', y = 'disc_var2', fit_reg = False,
+                    x_jitter = 0.2, y_jitter = 0.2, scatter_kws = {'alpha' : 1/3})
+
+            # right plot: heat map with bin edges between values
+            plt.subplot(1, 2, 2)
+            bins_x = np.arange(0.5, 10.5+1, 1)
+            bins_y = np.arange(-0.5, 10.5+1, 1)
+            plt.hist2d(data = df, x = 'disc_var1', y = 'disc_var2',
+                    bins = [bins_x, bins_y])
+            plt.colorbar();
+            ```
+    * Violin Plots
+        * Violin plots for quantitative variables vs qualitative variables
+
+            * ![violin_plots](./images/violin_plots.png) 
+        
+        * There are a few ways of plotting the relationship between one quantitative and one qualitative variable, that demonstrate the data at different levels of abstraction. The violin plot is on the lower level of abstraction. For each level of the categorical variable, a distribution of the values on the numeric variable is plotted. The distribution is plotted as a kernel density estimate, something like a smoothed histogram. There is an extra section at the end of the previous lesson that provides more insight into kernel density estimates.
+
+        * Seaborn's violinplot function can be used to create violin plots combined with box plots – we'll discuss box plots on the next page.
+
+        * `sb.violinplot(data = df, x = 'cat_var', y = 'num_var')`
+    
+    * Box Plots
+        * A box plot is another way of showing the relationship between a numeric variable and a categorical variable. Compared to the violin plot, the box plot leans more on summarization of the data, primarily just reporting a set of descriptive statistics for the numeric values on each categorical level. A box plot can be created using seaborn's boxplot function.
+
+        * ```python
+            plt.figure(figsize = [10, 5])
+            base_color = sb.color_palette()[0]
+
+            # left plot: violin plot
+            plt.subplot(1, 2, 1)
+            ax1 = sb.violinplot(data = df, x = 'cat_var', y = 'num_var', color = base_color)
+
+            # right plot: box plot
+            plt.subplot(1, 2, 2)
+            sb.boxplot(data = df, x = 'cat_var', y = 'num_var', color = base_color)
+            plt.ylim(ax1.get_ylim()) # set y-axis limits to be same as left plot
+            ```
+        
+        * ![box_plot](./images/boxplot.png) 
+    
+    * Clustered Bar Charts
+        * ![clustered-bar-charts](./images/clustered-bar-charts.png)
+
+        * To depict the relationship between two categorical variables, we can extend the univariate bar chart seen in the previous lesson into a clustered bar chart. Like a standard bar chart, we still want to depict the count of data points in each group, but each group is now a combination of labels on two variables. So we want to organize the bars into an order that makes the plot easy to interpret. In a clustered bar chart, bars are organized into clusters based on levels of the first variable, and then bars are ordered consistently across the second variable within each cluster. This is easiest to see with an example, using seaborn's countplot function. To take the plot from univariate to bivariate, we add the second variable to be plotted under the "hue" argument:
+
+        * `sb.countplot(data = df, x = 'cat_var1', hue = 'cat_var2')`
+    
+    * Facet Plot (Faceting)
+        * ![facet_plot](./images/facet_plot.png) 
+
+        * One general visualization technique that will be useful for you to know about to handle plots of two or more variables is faceting. In faceting, the data is divided into disjoint subsets, most often by different levels of a categorical variable. For each of these subsets of the data, the same plot type is rendered on other variables. Faceting is a way of comparing distributions or relationships across levels of additional variables, especially when there are three or more variables of interest overall. While faceting is most useful in multivariate visualization, it is still valuable to introduce the technique here in our discussion of bivariate plots.
+
+        * For example, rather than depicting the relationship between one numeric variable and one categorical variable using a violin plot or box plot, we could use faceting to look at a histogram of the numeric variable for subsets of the data divided by categorical variable levels. Seaborn's FacetGrid class facilitates the creation of faceted plots. There are two steps involved in creating a faceted plot. First, we need to create an instance of the FacetGrid object and specify the feature we want to facet by ("cat_var" in our example). Then we use the map method on the FacetGrid object to specify the plot type and variable(s) that will be plotted in each subset (in this case, histogram on "num_var").
+
+        * ```python
+            g = sb.FacetGrid(data = df, col = 'cat_var')
+            g.map(plt.hist, "num_var")
+            ```
+    
+    * Adapted Bar Charts
+
+        * Histograms and bar charts were introduced in the previous lesson as depicting the distribution of numeric and categorical variables, respectively, with the height (or length) of bars indicating the number of data points that fell within each bar's range of values. These plots can be adapted for use as bivariate plots by, instead of indicating count by height, indicating a mean or other statistic on a second variable.
+
+        * For example, we could plot a numeric variable against a categorical variable by adapting a bar chart so that its bar heights indicate the mean of the numeric variable. This is the purpose of seaborn's barplot function:
+
+        * ```python
+            base_color = sb.color_palette()[0]
+            sb.barplot(data = df, x = 'cat_var', y = 'num_var', color = base_color)
+            ```
+    
+    * Line Plots
+
+        * The line plot is a fairly common plot type that is used to plot the trend of one numeric variable against values of a second variable. In contrast to a scatterplot, where all data points are plotted, in a line plot, only one point is plotted for every unique x-value or bin of x-values (like a histogram). If there are multiple observations in an x-bin, then the y-value of the point plotted in the line plot will be a summary statistic (like mean or median) of the data in the bin. The plotted points are connected with a line that emphasizes the sequential or connected nature of the x-values.
+
+        * If the x-variable represents time, then a line plot of the data is frequently known as a time series plot. Often, we have only one observation per time period, like in stock or currency charts. While there is a seaborn function tsplot that is intended to be used with time series data, it is fairly specialized and (as of this writing's seaborn 0.8) is slated for major changes.
+
+### Linear Algebra
+
+* Vector
+    * Arrow
+    * Inside a coordinate system (X, Y)
+    * Sitting on the origin (0, 0)
+        * Horizontal line: X Axis
+        * Vertical line: Y Axis
+        * The place X and Y intersect is called Origin 
+        * ![vector_position](./images/vector_position.png)
+    * The first value represents the X Axis
+        * Positive values will sit on the right side
+        * Negative values will sit on the left side
+    * The second value represents the Y Axis
+        * Positive values will sit on the top side
+        * Negative values will sit on the bottom side
+    * In 3D we add a new Axis called the Z Axis
+        * X, Y, Z
+    
+    * Vector Addition
+        * ![vector_addition_1](./images/vector_addition_1.png)
+        * ![vector_addition_2](./images/vector_addition_2.png)
+        * ![vector_addition_3](./images/vector_addition_3.png) 
+    
+    * Vector Multiplication
+        * Scaling
+            * 2, 1/2, -1.8 (Scalars)
+        * ![scaling_1](./images/vector_scaling1.png)
+        * ![scaling_2](./images/vector_scaling2.png)
+
+    * Vectors- Mathematical Definition
+
+        *  What is a Vector? The plain explanation would be that a vector is an ordered list of numbers.
+
+        * Each element in the vector, also called component or coordinate, is a number, denoted here by a_ia 
+        
+        * This specific vector (in the picture above ) has nn elements and can be in the field of Real Numbers \mathbb{R}R.
+
+        * A vector of nn real elements defines an nn dimensional vector and belongs to \mathbb{R}^nR n.
+
+        * We use the following mathematical notation to define a vector: \vec{x} 
+    
+    * Vector Transpose
+
+        * It's very important to note that in this lesson we emphasize the column vector. But vectors can also be represented at row vectors.
+
+        * In the world of Linear Algebra we call this change a transpose. The mathematical symbol of a transpose is TT and it's used the following way:
+
+        * ![transpose_vector](./images/transpose_vector.png)
+    
+    * Magnitude and Direction
+
+        * To calculate the magnitude of a 2D vector we will use the Pythagorean Theorem.
+
+        * In our example the magnitude will be calculated the following way:
+
+        * ![magnitute_vector](./images/magnitute_vector.png)
+
+        * To calculate the direction of the movement we will use an angle. We can use Degrees or Radians. In this example we will focus on Degree. (It is always possible to move Degrees to Radians and vice versa).
+
+        * ![direction_vector](./images/direction_vector.png) 
+
+        * To calculate \thetaθ we will use what we remember from Trigonometry!
+
+        * ![direction_vector2](./images/direction_vector2.png) 
+
+    * Linear Combination, Span and Basis Vectors
+        * ![basis_vectors](./images/basis_vectors.png) 
+
+        * ![basis_vectors5](./images/basis_vectors5.png)
+
+        * ![basis_vectors2](./images/basis_vectors2.png)
+
+        * In general terms, the simple definition of a linear combination is a multiplication of a scalar to a variable and addition of those terms.
+
+        * ![basis_vectors3](./images/basis_vectors3.png) 
+
+        * ![basis_vectors4](./images/basis_vectors4.png) 
+
+        * Linearly dependent
+            * Vector dont add to the span (the group of all possible vectors)
+        
+        * Linearly independent
+            * Vector does add up to the span
+        
+        * ![span](./images/span.png) 
+
+        * ![linearly_dependent](./images/linearly_dependent.png) 
+
+        * When each vector in a set of vectors vector can not be defined as a linear combination of the other vectors, they are a set of linearly independent vectors.
+
+        * The easiest way to know if a set of vectors is linear dependent or not, is with the use of determinants. Determinants are beyond the scope of our Linear Algebra Essentials and we will not focus on that.
+
+        * Linear Equations
+
+        * ![linearly_equation1](./images/linearly_equation1.png) 
+
+        * ![linearly_equation2](./images/linearly_equation2.png) 
+
+        * ![linearly_equation3](./images/linearly_equation3.png) 
+
+        * ![linearly_equation4](./images/linearly_equation4.png) 
+
+        * ![linearly_equation5](./images/linearly_equation5.png) 
+
+    * Matrixes
+
+        * Our next step is to understand what a Matrix is.
+
+        * Before we dive into the video, let's cover a few necessary definitions and calculations!
+
+        * So what is a Matrix? No, not that Matrix. The Matrix we are referring to was designed and created well before 1999.
+
+        * A Matrix is a two dimensional array that contains the same elements as the vector.
+
+        * A Matrix can have mm rows and nn columns.
+
+        * If a Matrix has mm rows and nn columns is it called an mm x nn matrix.
+
+        * Each element a_{ij}a ij in the matrix displayed in equation 11 is a numerical value displayed in row ii and column jj.
+
+        * ![matrix](./images/matrix.png)  
+
+        * Multiplication of a Square Matrices
+
+            * When multiplying 2 matrices we need to consider the dimensions of each, as multiplication is not possible if the dimensions are not aligned appropriately.
+
+            * A square matrix is a matrix that has the same number of rows and columns
+        
+        * ![matrix1](./images/matrix1.png)
+
+        * ![matrix2](./images/matrix2.png)
+
+        * ![matrix3](./images/matrix3.png)
+
+        * ![matrix4](./images/matrix4.png)
+
+        * ![matrix5](./images/matrix5.png)
+    
+    * Linear Algebra and Neural Networks
+
+        * ![nns](./images/nns.png)
+            * In practice, these lines symbolize a coefficient (a scalar) that is mathematically connecting one neuron to the next. These coefficients are called weights.
+
+            * The "lines" connect each neuron in a specific layer to all of the neurons on the following. For example, in our example, you can see how each neuron in the hidden layer is connected to a neuron in the output one.
+        
+        * Since there are so many weights connecting one layer to the next, we mathematically organize those coefficients in a matrix, denoted as the weight matrix.
+
+            * ![nns1](./images/nns1.png) 
+        
+        * ![nns2](./images/nns2.png) 
+
+        * ![nns3](./images/nns3.png) 
+
+            * The next layer you receive a sum of all inputs multipled by their respective scalars (weights). Also, we have a fixed value called a bias that will be used as part of the equation
+
+        * Training
+            * During the training phase, we take the data set (also called the training set), which includes many pairs of inputs and their corresponding targets (outputs). Our goal is to find a set of weights that would best map the inputs to the desired outputs.
+        
+
+        * Evaluation
+
+            * In the evaluation phase, we use the network that was created in the training phase, apply our new inputs and expect to obtain the desired outputs.
+
+        
+        * The training phase will include two steps:
+
+            * Feedforward
+            * Backpropagation
+        
+
+        * We will repeat these steps as many times as we need until we decide that our system has reached the best set of weights, giving us the best possible outputs.
+
+        * To show you how relevant Linear Algebra is here, we will focus on the feedforward process. And again, focus on the mathematical calculations. All of these new definitions (training, evaluation, feedforward, backpropagation, etc will be emphasized very soon!)
+    
+    * ![nns4](./images/nns4.png)  
+
+    * ![nns5](./images/nns5.png) 
+
+    * ![nns6](./images/nns6.png)
+
+* Calculus
+
+    * `dt`: Tiny change in time
+    * Hard problem: Sum of many small values
+    * Since `dt` tends to 0, we will endup drawing a geometric figure
+
+    * ![calculus](./images/calculus.png) 
+
+    * The Integral of any function will help us find the area in a graph
+
+    * `dx`: Difference in x
+    * `dA`: Difference in Area
+
+    * ![calculus1](./images/calculus1.png) 
+
+    * ![calculus2](./images/calculus2.png)
+
+    * ![calculus3](./images/calculus3.png) 
+
+    * ![calculus4](./images/calculus4.png)
+
+    * In this back and forth between Integrals and Derivatives, where the Derivative of a function for the area under a graph gives you back the function defining the graph it self, its called the Fundamental Theorem of Calculus
+
+    * Derivative
+
+        * ![calculus5](./images/calculus5.png)  
+            * This gives you velocity in meters per second
+        
+        * ![calculus6](./images/calculus6.png)  
+
+        * ![calculus7](./images/calculus7.png)  
+
+        * ![calculus8](./images/calculus8.png)  
+
+        * ![calculus9](./images/calculus9.png)  
+
+        * ![calculus10](./images/calculus10.png)  
+
+        * ![calculus11](./images/calculus11.png)  
+
+        * ![calculus12](./images/calculus12.png)  
+
+        * ![calculus13](./images/calculus13.png)
+
+        * Derivative mesures the difference between to points (stats of time)
+
+        * In geometry, the tangent line (or simply tangent) to a plane curve at a given point is the straight line that "just touches" the curve at that point.
+
+        * The derivative of a function of a real variable measures the sensitivity to change of the function value (output value) with respect to a change in its argument (input value). Derivatives are a fundamental tool of calculus. For example, the derivative of the position of a moving object with respect to time is the object's velocity: this measures how quickly the position of the object changes when time advances.
+
+        * ![derivatives0](./images/derivatives0.png)
+
+        * ![derivatives1](./images/derivatives1.png)
+
+        * ![derivatives2](./images/derivatives2.png)
+
+        * ![derivatives3](./images/derivatives3.png)
+
+        * ![derivatives4](./images/derivatives4.png)
+
+            * Lets say `dx` is 0.001, that means `dx^2` is 0.001 x 0.001 which is 0.000001.
+
+            * It is safe to ignore values of `dx` with a power greater than 1
+        
+        * ![derivatives5](./images/derivatives5.png)
+
+        * ![derivatives6](./images/derivatives6.png)
+
+        * ![derivatives7](./images/derivatives7.png)
+
+            * Each facet is `x^2` times 3 (X * X * X)
+
+            * A cube has 6 facets, that leaves us with 3 relevant ones
+        
+        * ![derivatives8](./images/derivatives8.png)
+
+        * ![derivatives9](./images/derivatives9.png)
+
+            * We can ignore `dx^3` and `dx^2` since ultimately this will get devided by `dx`
+
+        * ![derivatives10](./images/derivatives10.png)
+
+        * ![derivatives11](./images/derivatives11.png)
+
+            * If their still any `dx` remaining, those terms wont survive the approximation to 0
+        
+        * ![derivatives12](./images/derivatives12.png)
+
+        * ![derivatives13](./images/derivatives13.png)
+
+        * ![derivatives14](./images/derivatives14.png)
+
+        * ![derivatives15](./images/derivatives15.png)
+        
+        * ![derivatives16](./images/derivatives16.png)
+
+            * We can ignore the multiples of `dx^2`. That means that no matter the power, the "power rule" will always work since `dx` will be approximated to 0
+
+        * ![sin-cos0](./images/sin-cos0.png)
+
+        * ![sin-cos01](./images/sin-cos011.png)
+
+        * ![sin-cos1](./images/sin-cos1.png)
+
+        * ![sin-cos2](./images/sin-cos2.png)
+
+        * ![sin-cos3](./images/sin-cos3.png)
+
+        * ![sin-cos4](./images/sin-cos4.png)
+
+        * ![sin-cos5](./images/sin-cos5.png)
+
+        * ![sin-cos6](./images/sin-cos6.png)
+
+        * ![sin-cos7](./images/sin-cos7.png)
+
+        * ![sin-cos7](./images/sin-cos7.png)
+
+        * ![sin-cos8](./images/sin-cos8.png)
+
+        * The Chain Rule
+
+        * ![chain-rule](./images/chain-rule.png)
+
+            * You can Add them together 
+            * You can Multiply them
+            * You can put one inside the other (compositing)
+        
+        * ![chain-rule1](./images/chain-rule1.png)
+
+            * The sum of two functions, will lead to the sum of their derivatives 
+        
+        * ![chain-rule2](./images/chain-rule2.png)
+
+        * ![chain-rule3](./images/chain-rule3.png)
+
+        * ![chain-rule4](./images/chain-rule4.png)
+
+        * ![chain-rule5](./images/chain-rule5.png)
+
+        * ![chain-rule6](./images/chain-rule6.png)
+
+            * Products are a bit different 
+        
+        * ![chain-rule7](./images/chain-rule7.png)
+
+            * This will lead us to the Area of this box
+        
+
+        * ![chain-rule8](./images/chain-rule8.png)
+
+        * ![chain-rule9](./images/chain-rule9.png)
+
+        * ![chain-rule10](./images/chain-rule10.png)
+
+        * ![chain-rule11](./images/chain-rule11.png)
+
+        * ![chain-rule12](./images/chain-rule12.png)
+
+        * ![chain-rule13](./images/chain-rule13.png)
+
+        * ![chain-rule14](./images/chain-rule14.png)
+
+        * ![chain-rule15](./images/chain-rule15.png)
+
+        * ![chain-rule16](./images/chain-rule16.png)
+
+        * Derivatives of exponentials
+
+        * ![der-expo](./images/der-expo.png)
+
+        * ![der-expo1](./images/der-expo1.png)
+
+        * ![der-expo2](./images/der-expo2.png)
+
+        * ![der-expo3](./images/der-expo3.png)
+
+        * ![der-expo3-1](./images/der-expo3-1.png)
+
+        * ![der-expo4](./images/der-expo4.png)
+
+        * ![der-expo5](./images/der-expo5.png)
+
+        * ![der-expo6](./images/der-expo6.png)
+
+        * ![der-expo7](./images/der-expo7.png)
+
+        * ![der-expo8](./images/der-expo8.png)
+
+        * ![der-expo9](./images/der-expo9.png)
+
+        * Implicit Differentiation
+
+        * ![impl-dif](./images/impl-dif.png)
+
+        * ![impl-dif1](./images/impl-dif1.png)
+
+        * Limit
+
+        * ![limit](./images/limit.png)
+
+        * ![limit1](./images/limit1.png)
+
+        * ![limit2](./images/limit2.png)
+
+        * ![limit3](./images/limit3.png)
+
+        * ![limit4](./images/limit4.png)
+
+        * ![limit5](./images/limit5.png)
+
+    * Integral
+
+        * Inverse of derivatives 
+
+        * ![integral0](./images/integral0.png)   
+
+        * ![integral](./images/integral.png)   
+
+        * ![integral1](./images/integral1.png)   
+
+        * ![integral2](./images/integral2.png)  
+
+        * ![integral3](./images/integral3.png)  
+
+        * ![integral4](./images/integral4.png)  
+
+        * ![integral5](./images/integral5.png)  
+
+        * ![integral6](./images/integral6.png)  
+
+        * ![integral7](./images/integral7.png)  
+
+        * ![integral8](./images/integral8.png)  
+
+        * ![integral9](./images/integral9.png)  
+
+        * ![integral10](./images/integral10.png)  
+
+        * ![integral11](./images/integral11.png)  
+
+        * ![integral12](./images/integral12.png)
+
+        * ![integral13](./images/integral13.png)   
+            * Fundamental theorem of calculus 
+
+        * ![integral14](./images/integral14.png)   
+
+        * ![integral15](./images/integral15.png)   
+
+        * ![integral16](./images/integral16.png)   
+    
+    * Calculus in Neural Networks
+
+        * ![calc-nn](./images/calc-nn.png)   
+
+            * The weights tell you what pixel pattern this neuron is picking up on (green for positive, and red for negative), and the bias tells how high the weighted sum needs to be before the neuron gets to be meaningfully active. 
+        
+        * ![calc-nn](./images/calc-nn1.png)   
+
+        * ![calc-nn](./images/calc-nn2.png)   
+
+        * ![calc-nn](./images/calc-nn3.png)   
+
+        * ![calc-nn](./images/calc-nn4.png)   
+
+        * ![calc-nn](./images/calc-nn5.png)   
+
+        * ![calc-nn](./images/calc-nn6.png)   
+
+        * ![calc-nn](./images/calc-nn7.png)   
+
+        * ![calc-nn](./images/calc-nn8.png)   
+
+        * ![calc-nn](./images/calc-nn9.png)   
+        
+        * ![calc-nn](./images/calc-nn10.png)   
+
+        * ![calc-nn](./images/calc-nn11.png)   
+
+        * ![calc-nn](./images/calc-nn12.png)   
+
+        * ![calc-nn](./images/calc-nn13.png)   
+
+        * ![calc-nn](./images/calc-nn14.png)   
+
+        * ![calc-nn](./images/calc-nn15.png)   
+
+        * ![calc-nn](./images/calc-nn16.png)   
+
+        * ![calc-nn](./images/calc-nn17.png)   
+
+        * ![calc-nn](./images/calc-nn18.png)   
+
+        * ![calc-nn](./images/calc-nn19.png)   
+            * Gradient descent will minimize the cost function value
+            * Backpropagation 
+        
+        * ![calc-nn](./images/calc-nn20.png) 
+
+        * ![calc-nn](./images/calc-nn25.png)
+
+        * ![calc-nn](./images/calc-nn27.png) 
+            * Everything that is blue is a positive weight 
+            * Everything that is red is a negative weight
+            * We need to make the blue weights stronger, and the red weaker
+
+        * ![calc-nn](./images/calc-nn21.png) 
+
+        * ![calc-nn](./images/calc-nn22.png) 
+
+        * ![calc-nn](./images/calc-nn23.png) 
+
+        * ![calc-nn](./images/calc-nn24.png) 
+
+        * ![calc-nn](./images/calc-nn26.png) 
+
+            * This average is the gradient descent
+
+            * Stochastic gradiant descent 
+                * Calculate the gradiant per batch size to minimze computing
+
+        * ![calc-nn](./images/calc-nn28.png) 
+
+        * ![calc-nn](./images/calc-nn29.png)  
+
+        * ![calc-nn](./images/calc-nn30.png) 
+
+        * ![calc-nn](./images/calc-nn31.png) 
+
+        * ![calc-nn](./images/calc-nn32.png) 
+
+        * ![calc-nn](./images/calc-nn33.png) 
+
+        *  ![calc-nn](./images/calc-nn34.png) 
+
+        *  ![calc-nn](./images/calc-nn35.png) 
+
+        *  ![calc-nn](./images/calc-nn36.png) 
+
+        *  ![calc-nn](./images/calc-nn37.png) 
+
+        *  ![calc-nn](./images/calc-nn38.png) 
+
+        *  ![calc-nn](./images/calc-nn39.png) 
+
+        *  ![calc-nn](./images/calc-nn40.png) 
+
+    * Neural Networks
+
+        *  ![nn](./images/nn.png) 
+
+        *  ![nn1](./images/nn1.png) 
+
+        *  ![nn2](./images/nn2.png) 
+
+        *  ![nn3](./images/nn3.png)
+
+        *  ![nn8](./images/nn8.png)
+
+        *  ![nn9](./images/nn9.png)
+
+        *  ![nn10](./images/nn10.png) 
+        
+        * `AND` Neural Network
+
+        * ```python
+            import pandas as pd
+
+            # TODO: Set weight1, weight2, and bias
+            weight1 = 1
+            weight2 = 1
+            bias = -2
+
+
+            # DON'T CHANGE ANYTHING BELOW
+            # Inputs and outputs
+            test_inputs = [(0, 0), (0, 1), (1, 0), (1, 1)]
+            correct_outputs = [False, False, False, True]
+            outputs = []
+
+            # Generate and check output
+            for test_input, correct_output in zip(test_inputs, correct_outputs):
+                linear_combination = weight1 * test_input[0] + weight2 * test_input[1] + bias
+                output = int(linear_combination >= 0)
+                is_correct_string = 'Yes' if output == correct_output else 'No'
+                outputs.append([test_input[0], test_input[1], linear_combination, output, is_correct_string])
+
+            # Print output
+            num_wrong = len([output[4] for output in outputs if output[4] == 'No'])
+            output_frame = pd.DataFrame(outputs, columns=['Input 1', '  Input 2', '  Linear Combination', '  Activation Output', '  Is Correct'])
+            if not num_wrong:
+                print('Nice!  You got it all correct.\n')
+            else:
+                print('You got {} wrong.  Keep trying!\n'.format(num_wrong))
+            print(output_frame.to_string(index=False))
+            ```
+
+        *  ![nn12](./images/nn11.png)  
+        
+        * `OR` Neural Network
+
+        *  ```python
+            # TODO: Set weight1, weight2, and bias
+            weight1 = 1
+            weight2 = 1
+            bias = -1
+
+            # DON'T CHANGE ANYTHING BELOW
+            # Inputs and outputs
+            test_inputs = [(0, 0), (0, 1), (1, 0), (1, 1)]
+            correct_outputs = [False, False, False, True]
+            outputs = []
+
+            # Generate and check output
+            for test_input, correct_output in zip(test_inputs, correct_outputs):
+                linear_combination = weight1 * test_input[0] + weight2 * test_input[1] + bias
+                output = int(linear_combination >= 0)
+                is_correct_string = 'Yes' if output == correct_output else 'No'
+                outputs.append([test_input[0], test_input[1], linear_combination, output, is_correct_string])
+
+            # Print output
+            num_wrong = len([output[4] for output in outputs if output[4] == 'No'])
+            output_frame = pd.DataFrame(outputs, columns=['Input 1', '  Input 2', '  Linear Combination', '  Activation Output', '  Is Correct'])
+            if not num_wrong:
+                print('Nice!  You got it all correct.\n')
+            else:
+                print('You got {} wrong.  Keep trying!\n'.format(num_wrong))
+            print(output_frame.to_string(index=False))
+            ```
+        
+        *  ![nn12](./images/nn12.png) 
+
+        * `NOT` Neural Network
+
+            * Consider only input 2
+
+        * ```python
+            import pandas as pd
+
+            # TODO: Set weight1, weight2, and bias
+            weight1 = 0
+            weight2 = -2
+            bias = 1
+
+            # DON'T CHANGE ANYTHING BELOW
+            # Inputs and outputs
+            test_inputs = [(0, 0), (0, 1), (1, 0), (1, 1)]
+            correct_outputs = [True, False, True, False]
+            outputs = []
+
+            # Generate and check output
+            for test_input, correct_output in zip(test_inputs, correct_outputs):
+                linear_combination = weight1 * test_input[0] + weight2 * test_input[1] + bias
+                output = int(linear_combination >= 0)
+                is_correct_string = 'Yes' 
+                if output == correct_output else 'No'
+                outputs.append([test_input[0], test_input[1], linear_combination, output, is_correct_string])
+
+            # Print output
+            num_wrong = len([output[4] for output in outputs if output[4] == 'No'])
+            output_frame = pd.DataFrame(outputs, columns=['Input 1', '  Input 2', '  Linear Combination', '  Activation Output', '  Is Correct'])
+            if not num_wrong:
+                print('Nice!  You got it all correct.\n')
+            else:
+                print('You got {} wrong.  Keep trying!\n'.format(num_wrong))
+            print(output_frame.to_string(index=False))
+            ```
+        
+        *  ![nn13](./images/nn13.png) 
+
+        *  ![nn14](./images/nn14.png) 
+
+            * Multiply those numbers by a **learning rate**
+
+            * Negative point in the positive area, so we subtract the function
+
+        *  ![nn15](./images/nn15.png) 
+
+        *  ![nn16](./images/nn16.png) 
+            * We obtain a new equation to approximate the value to the line
+
+        *  ![nn17](./images/nn17.png) 
+            * Positive point in the negative area, so we add to the function
+        
+        *  ![nn18](./images/nn18.png) 
+
+
+            * ```python
+                import numpy as np
+                # Setting the random seed, feel free to change it and see different solutions.
+                np.random.seed(42)
+
+                def stepFunction(t):
+                    if t >= 0:
+                        return 1
+                    return 0
+
+                def prediction(X, W, b):
+                    return stepFunction((np.matmul(X,W)+b)[0])
+
+                # TODO: Fill in the code below to implement the perceptron trick.
+                # The function should receive as inputs the data X, the labels y,
+                # the weights W (as an array), and the bias b,
+                # update the weights and bias W, b, according to the perceptron algorithm,
+                # and return W and b.
+                def perceptronStep(X, y, W, b, learn_rate = 0.01):
+                    for i in range(len(X)):
+                        y_hat = prediction(X[i],W,b)
+                        if y[i]-y_hat == 1:
+                            W[0] += X[i][0]*learn_rate
+                            W[1] += X[i][1]*learn_rate
+                            b += learn_rate
+                        elif y[i]-y_hat == -1:
+                            W[0] -= X[i][0]*learn_rate
+                            W[1] -= X[i][1]*learn_rate
+                            b -= learn_rate
+                    return W, b
+                    
+                # This function runs the perceptron algorithm repeatedly on the dataset,
+                # and returns a few of the boundary lines obtained in the iterations,
+                # for plotting purposes.
+                # Feel free to play with the learning rate and the num_epochs,
+                # and see your results plotted below.
+                def trainPerceptronAlgorithm(X, y, learn_rate = 0.01, num_epochs = 25):
+                    x_min, x_max = min(X.T[0]), max(X.T[0])
+                    y_min, y_max = min(X.T[1]), max(X.T[1])
+                    W = np.array(np.random.rand(2,1))
+                    b = np.random.rand(1)[0] + x_max
+                    # These are the solution lines that get plotted below.
+                    boundary_lines = []
+                    for i in range(num_epochs):
+                        # In each epoch, we apply the perceptron step.
+                        W, b = perceptronStep(X, y, W, b, learn_rate)
+                        boundary_lines.append((-W[0]/W[1], -b/W[1]))
+                    return boundary_lines
+
+                ```
+            
+            *  ![nn19](./images/nn19.png) 
+
+        *  ![nn20](./images/nn20.png) 
+
+            * A linear function won't work, we need to draw a line. Perceptron won't work, we need to adapt it
+
+            * Lets create an **Error Function**
+        
+        *  ![nn21](./images/nn21.png) 
+
+        *  ![nn22](./images/nn22.png) 
+
+        *  ![nn23](./images/nn23.png) 
+
+            * We will use Gradiant Descent to find our local minimal, but we gotta remember that the erro function values must be continuos for it to work. Otherwise, Gradiant Descent will get stuck without small variations.
+
+            * Differentiable function of one real variable is a function whose derivative exists at each point in its domain.
+
+        
+        * ![nn24](./images/nn24.png) 
+
+        * ![nn25](./images/nn25.png) 
+
+        * ![nn26](./images/nn26.png) 
+
+        * ![nn27](./images/nn27.png) 
+
+        * ![nn28](./images/nn28.png) 
+
+        * ![nn29](./images/nn29.png) 
+
+            * The number `e` is a mathematical constant that is the base of the natural logarithm: the unique number whose natural logarithm is equal to one. It is approximately equal to 2.71828,[1] and is the limit of (1 + 1/n)n as n approaches infinity, an expression that arises in the study of compound interest. It can also be calculated as the sum of the infinite series[2]
+        
+        * ![nn30](./images/nn30.png) 
+
+        * We'll learn about the softmax function, which is the equivalent of the sigmoid activation function, but when the problem has 3 or more classes.
+
+        * ![nn31](./images/nn31.png) 
+
+        * ![nn32](./images/nn32.png) 
+
+        * ![nn33](./images/nn33.png) 
+
+            * Euler constant = 2.718
+            * `2.71^2 / (2.71^2 + 2.71^1 + 2.71^0)` = `0.66437792312`
+            * `2.71^1 / (2.71^2 + 2.71^1 + 2.71^0)` = `0.24515790521`
+            * `2.71^0 / (2.71^2 + 2.71^1 + 2.71^0)` = `0.09046417166`
+
+            * We are using the `exp` function, because numbers cant be negative
+
+            * This is called the `softmax` function
+
+            * ```python
+                import numpy as np
+
+                def softmax(L):
+                    expL = np.exp(L)
+                    sumExpL = sum(expL)
+                    result = []
+                    for i in expL:
+                        result.append(i*1.0/sumExpL)
+                    return result
+                    
+                    # Note: The function np.divide can also be used here, as follows:
+                    # def softmax(L):
+                    #     expL = np.exp(L)
+                    #     return np.divide (expL, expL.sum())
+                ```
+            
+        * ![nn34](./images/nn34.png) 
+
+        * Maximum Likelihood
+
+            * The probability the points were classified correctly 
+
+        * ![nn35](./images/nn35.png) 
+
+        * ![nn36](./images/nn36.png) 
+
+        * ![nn37](./images/nn37.png) 
+
+        * ![nn38](./images/nn38.png) 
+
+        * In this lesson and quiz, we will learn how to maximize a probability, using some math. Nothing more than high school math, so get ready for a trip down memory lane!
+
+        * ![nn39](./images/nn39.png) 
+
+        * ![nn40](./images/nn40.png) 
+
+        * ![nn41](./images/nn41.png) 
+
+        * We will take `log` base `e` instead of base `10`
+
+        * The `log` of a number between `0` and `1` is always a negative number, since log of 1 is 0
+
+        * So it makes sense to think of the negative of `log` of the probabilities, that way we have positive numbers 
+
+        * The sum of those negative logarithms of the probabilities is called **Cross-entropy**
+
+        * ![nn42](./images/nn42.png) 
+
+        * A **bad model** will give us a high Cross Entropy, and a **good model** will give us a low Cross Entropy
+
+        * ![nn43](./images/nn43.png)  
+
+            * The points that are misclassified have large values
+
+            * Points that are correctly classified will have values close to 1 (small values)
+        
+        * Minimizing the Cross Entropy is our objective
+
+        * So we're getting somewhere, there's definitely a connection between probabilities and error functions, and it's called Cross-Entropy. This concept is tremendously popular in many fields, including Machine Learning. Let's dive more into the formula, and actually code it!
+
+        * ![nn44](./images/nn44.png)  
+
+        * ![nn45](./images/nn45.png)  
+
+        * ![nn46](./images/nn46.png)  
+
+            * The Cross Entropy for 1 (if present on box) is low, that means its a good model for for that. However, if we switch that to 0, the model is pretty bad
+
+        * Now, time to shine! Let's code the formula for cross-entropy in Python. As in the video, Y in the quiz is for the category, and P is the probability.
+
+        * ```python
+            import numpy as np
+
+            def cross_entropy(Y, P):
+                Y = np.float_(Y)
+                P = np.float_(P)
+                return -np.sum(Y * np.log(P) + (1 - Y) * np.log(1 - P))
+            ```
+        
+        * Now, time to shine! Let's code the formula for cross-entropy in Python. As in the video, Y in the quiz is for the category, and P is the probability.
+
+        * ![nn47](./images/nn47.png)  
+
+        * ![nn48](./images/nn48.png)  
+
+        * ![nn49](./images/nn49.png)  
+
+        * ![nn50](./images/nn50.png)  
+
+        * Logistic Regression
+
+            * Now, we're finally ready for one of the most popular and useful algorithms in Machine Learning, and the building block of all that constitutes Deep Learning. The Logistic Regression Algorithm. And it basically goes like this:
+
+                * Take your data
+
+                * Pick a random model
+
+                * Calculate the error
+
+                * Minimize the error, and obtain a better model
+
+                * Enjoy!
+        
+        * Calculating the Error Function
+
+            * ![nn51](./images/nn51.png)  
+
+            * ![nn52](./images/nn52.png)  
+
+            * ![nn53](./images/nn53.png)  
+
+            * ![nn54](./images/nn54.png)  
+
+                * We want the average `1/m` of all points
+            
+            * ![nn55](./images/nn55.png)  
+
+            * ![nn56](./images/nn56.png)  
+
+        * Minimizing the error function
+
+            * ![nn57](./images/nn57.png)  
+
+            * Gradiant Descent
+
+            * ![nn58](./images/nn58.png)  
+
+            * ![nn59](./images/nn59.png)  
+
+            * ![nn60](./images/nn60.png)  
+
+                * The gradient   of the error function is the vector formed by the partial derivatives of the error function with respect to the weights and bias.
+
+                * We take a step on the direction of the negative of the gradient
+
+                * We also introduce a small learning rate called alpha (example: 0.1)
+
+            * ![nn61](./images/nn61.png)  
+
+                * We will multiple the gradient by the learning rate (alpha)
+            
+            * ![nn62](./images/nn62.png)  
+
+                * The new weight (w1') will be the current weigth value (w1) minus the alpha (learning rate) multiplied by the partial derivative of the error with respect to the weigth (w1).
+            
+            * ![nn63](./images/nn63.png)  
+
+            * ![nn64](./images/nn64.png)  
+
+                * The bias will become the current bias minus alpha multiplied by the partial derivative of the error with respect to the bias.
+            
+            * ![nn65](./images/nn65.png)  
+        
+        * Gradient Calculation
+
+            * In the last few videos, we learned that in order to minimize the error function, we need to take some derivatives. So let's get our hands dirty and actually compute the derivative of the error function. The first thing to notice is that the sigmoid function has a really nice derivative. Namely,
+
+            * ![nn66](./images/nn66.png)  
+
+            * ![nn67](./images/nn67.png) 
+
+                * Calculate the derivative of the prediction 
+
+            * ![nn68](./images/nn68.png) 
+
+                * Calculate the derivative of the Error 
+
+            * ![nn69](./images/nn69.png) 
+
+                * If you think about it, this is fascinating. The gradient is actually a scalar times the coordinates of the point! And what is the scalar? Nothing less than a multiple of the difference between the label and the prediction. What significance does this have?
+            
+            * ![nn70](./images/nn70.png) 
+
+            * So, a small gradient means we'll change our coordinates by a little bit, and a large gradient means we'll change our coordinates by a lot.
+
+            * If this sounds anything like the perceptron algorithm, this is no coincidence! We'll see it in a bit.
+
+        * Gradient Descent Step
+
+            * ![nn71](./images/nn71.png) 
+
+            * ![nn72](./images/nn72.png)
+
+            * ![nn73](./images/nn73.png)
+
+            * ![nn74](./images/nn74.png)
+
+            * ![nn75](./images/nn75.png)
+
+    * Check `GradientDescent.ipynb` for more
+
+        * ```python
+            # Implement the following functions
+
+            # Activation (sigmoid) function
+            def sigmoid(x):
+                return 1 / (1 + np.exp(-x))
+
+            # Output (prediction) formula
+            def output_formula(features, weights, bias):
+                # np.dot is the Dot product of two arrays. Specifically,. If both a and b are 1-D arrays, it is inner product of vectors (without complex conjugation).
+                # two weights and two features
+                return sigmoid(np.dot(features, weights) + bias)
+
+            # Error (log-loss) formula
+            def error_formula(y, output):
+                return - y*np.log(output) - (1 - y) * np.log(1-output)
+
+            # Gradient descent step
+            def update_weights(x, y, weights, bias, learnrate):
+                output = output_formula(x, weights, bias)
+                d_error = y - output
+                weights += learnrate * d_error * x
+                bias += learnrate * d_error
+                return weights, bias
+            
+            np.random.seed(44)
+
+            epochs = 100
+            learnrate = 0.01
+
+            def train(features, targets, epochs, learnrate, graph_lines=False):
+                
+                errors = []
+                n_records, n_features = features.shape
+                last_loss = None
+                # two weights and two features
+                weights = np.random.normal(scale=1 / n_features**.5, size=n_features)
+                bias = 0
+                for e in range(epochs):
+                    del_w = np.zeros(weights.shape)
+                    for x, y in zip(features, targets):
+                        output = output_formula(x, weights, bias)
+                        error = error_formula(y, output)
+                        weights, bias = update_weights(x, y, weights, bias, learnrate)
+                    
+                    # Printing out the log-loss error on the training set
+                    out = output_formula(features, weights, bias)
+                    loss = np.mean(error_formula(targets, out))
+                    errors.append(loss)
+                    if e % (epochs / 10) == 0:
+                        print("\n========== Epoch", e,"==========")
+                        if last_loss and last_loss < loss:
+                            print("Train loss: ", loss, "  WARNING - Loss Increasing")
+                        else:
+                            print("Train loss: ", loss)
+                        last_loss = loss
+                        predictions = out > 0.5
+                        accuracy = np.mean(predictions == targets)
+                        print("Accuracy: ", accuracy)
+                    if graph_lines and e % (epochs / 100) == 0:
+                        display(-weights[0]/weights[1], -bias/weights[1])
+                        
+
+                # Plotting the solution boundary
+                plt.title("Solution boundary")
+                display(-weights[0]/weights[1], -bias/weights[1], 'black')
+
+                # Plotting the data
+                plot_points(features, targets)
+                plt.show()
+
+                # Plotting the error
+                plt.title("Error Plot")
+                plt.xlabel('Number of epochs')
+                plt.ylabel('Error')
+                plt.plot(errors)
+                plt.show()
+
+            ```
+        
+    * ![nn76](./images/nn76.png)
+
+        * In the Gradient Descent algorithm we always changes the weigths. In the Perceptron Algorithm only the misclassified points changes the weigths
+
+        * ![nn77](./images/nn77.png)
+
+        * For correctly classied points, Gradient Descent is telling the line to move away. 
+    
+    * ![nn78](./images/nn78.png)
+        
+

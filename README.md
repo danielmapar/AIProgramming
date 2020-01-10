@@ -2372,7 +2372,7 @@ In Python, functions are first-class objects. This means that functions can be p
 
         * ![nn42](./images/nn42.png) 
 
-        * A **bad model** will give us a high Cross Entropy, and a **good model** will give us a low Cross Entropy
+        * A **bad model** will give us a high Cross Entropy (log-loss), and a **good model** will give us a low Cross Entropy
 
         * ![nn43](./images/nn43.png)  
 
@@ -2603,14 +2603,243 @@ In Python, functions are first-class objects. This means that functions can be p
 
         * For correctly classied points, Gradient Descent is telling the line to move away. 
     
-    * ![nn78](./images/nn78.png)
+    * ![nn78](./images/nn78a.png)
 
         * We will check next how to deal with non linear models.
     
-    * ![nn79](./images/nn79.png)
+    * ![nn79](./images/nn79a.png)
 
-    * ![nn80](./images/nn80.png)
+    * ![nn80](./images/nn80a.png) 
 
         * We will create a probability function to cover that
         
+    * Neural Networks (Multi Layer Perceptron)
+
+    * ![nn78](./images/nn78.png)
+
+        * We will combine two linear models into a non-linear model
+
+    * ![nn79](./images/nn79.png)
+
+    * ![nn80](./images/nn80.png) 
+
+        * We will sum the two probabilities and run `sigmoid` on top of it to normalize the number (from 0 to 1)
+    
+    * ![nn81](./images/nn81.png)
+
+    * ![nn82](./images/nn82.png) 
+
+        * Since we are "adding" two linear models, we could add weigths for each of them. That tells us that one model is more relevant than the other, creating a new combination
+
+    * ![nn83](./images/nn83.png) 
+
+        * We have a Perceptron for the first linear model, and another one for the second one.
+
+        * As we combine the two and add weights for each, we create our first Neural Network.
+
+        * ![nn84](./images/nn84.png)  
+    
+    * ![nn85](./images/nn85.png) 
+
+        * The weights on the left tell us what equations the linears model have. On the other hand, the weigths on the right tell us what the linear combination is of the two models to obtain the curved non linear model on the right.
+    
+    * ![nn86](./images/nn86.png) 
+
+    * ![nn87](./images/nn87.png)
+
+        * We can write this using the notations with the **bias** inside the node, or out side it.
+
+    * Multiple layers
+
+        * Now, not all neural networks look like the one above. They can be way more complicated! In particular, we can do the following things:
+
+            * Add more nodes to the input, hidden, and output layers.
+
+            * Add more layers.
+
+        * The first layer is called the input layer
+
+        * ![nn88](./images/nn88.png)
+
+        * The next layer is the **linear layer** which is the set of linear models created from this first input layer
+
+        * ![nn89](./images/nn89.png)
+
+        * The final layer is called output layer, where the linear models get combined to obtain a non-linear model
+
+        * ![nn90](./images/nn90.png)
+
+        * ![nn91](./images/nn91.png)
+
+        * ![nn92](./images/nn92.png)
+
+            * With 3 inputs now we are reaching 3D space, and as we add input units we increase dimensions 
+
+        * ![nn93](./images/nn93.png)
+
+        * ![nn94](./images/nn94.png)
+
+            * We can have many hidden layer, having then many linear combinations
+
+        * ![nn95](./images/nn95.png)
+    
+    * Multi-Class Classification
+
+        * And here we elaborate a bit more into what can be done if our neural network needs to model data with more than one output.
+
+        * ![nn96](./images/nn96.png)
+    
+    * Feedforward
+
+        * Feedforward is the process neural networks use to turn the input into an output. Let's study it more carefully, before we dive into how to train the networks.
+
+        * ![nn97](./images/nn97.png)
+
+        * ![nn98](./images/nn98.png)
+
+        * ![nn99](./images/nn99.png)
+
+        * ![nn100](./images/nn100.png)
+    
+    * Error Function
+
+        * Just as before, neural networks will produce an error function, which at the end, is what we'll be minimizing. The following video shows the error function for a neural network.
+
+        * ![nn101](./images/nn101.png) 
+    
+    * Backpropagation
+
+        * Now, we're ready to get our hands into training a neural network. For this, we'll use the method known as backpropagation. In a nutshell, backpropagation will consist of:
+
+            * Doing a feedforward operation.
+
+            * Comparing the output of the model with the desired output.
+
+            * Calculating the error.
+
+            * Running the feedforward operation backwards (backpropagation) to spread the error to each of the weights.
+
+            * Use this to update the weights, and get a better model.
+
+            * Continue this until we have a model that is good.
+        
+        * Sounds more complicated than what it actually is. Let's take a look in the next few videos. The first video will show us a conceptual interpretation of what backpropagation is.
+
+        * ![nn102](./images/nn102.png) 
+
+        * ![nn103](./images/nn103.png) 
+
+        * ![nn104](./images/nn104.png) 
+
+            * In this case we know that the top model is the one doing the miscalssification. 
+
+            * That means that we want to reduce the weight coming from the top model and increase the weight coming from the bottom model.
+        
+        * ![nn105](./images/nn105.png) 
+
+        * ![nn106](./images/nn106.png) 
+
+        * ![nn107](./images/nn107.png) 
+
+    * Backpropagation Math
+
+        * And the next few videos will go deeper into the math. Feel free to tune out, since this part gets handled by Keras pretty well. If you'd like to go start training networks right away, go to the next section. But if you enjoy calculating lots of derivatives, let's dive in!
+
+        * ![nn108](./images/nn108.png) 
+
+        * ![nn109](./images/nn109.png) 
+
+        * ![nn110](./images/nn110.png) 
+
+    * Chain Rule
+
+        * We'll need to recall the chain rule to help us calculate derivatives.
+
+        * ![nn111](./images/nn111.png) 
+
+        * ![nn112](./images/nn112.png) 
+
+        * ![nn113](./images/nn113.png) 
+
+        * ![nn114](./images/nn114.png) 
+
+        * ![nn115](./images/nn115.png) 
+
+        * ![nn116](./images/nn116.png) 
+
+        * ![nn117](./images/nn117.png) 
+
+        * ```python
+            # Activation (sigmoid) function
+            def sigmoid(x):
+                return 1 / (1 + np.exp(-x))
+            def sigmoid_prime(x):
+                return sigmoid(x) * (1-sigmoid(x))
+            def error_formula(y, output):
+                return - y*np.log(output) - (1 - y) * np.log(1-output)
+            def error_term_formula(y, output):
+                return (y-output) * output * (1 - output)
+
+            # Neural Network hyperparameters
+            epochs = 1000
+            learnrate = 0.5
+
+            # Training function
+            def train_nn(features, targets, epochs, learnrate):
+                
+                # Use to same seed to make debugging easier
+                np.random.seed(42)
+
+                n_records, n_features = features.shape
+                last_loss = None
+
+                # Initialize weights
+                weights = np.random.normal(scale=1 / n_features**.5, size=n_features)
+
+                for e in range(epochs):
+                    del_w = np.zeros(weights.shape)
+                    for x, y in zip(features.values, targets):
+                        # Loop through all records, x is the input, y is the target
+
+                        # Activation of the output unit
+                        #   Notice we multiply the inputs and the weights here 
+                        #   rather than storing h as a separate variable 
+                        output = sigmoid(np.dot(x, weights))
+
+                        # The error, the target minus the network output
+                        error = error_formula(y, output)
+
+                        # The error term
+                        #   Notice we calulate f'(h) here instead of defining a separate
+                        #   sigmoid_prime function. This just makes it faster because we
+                        #   can re-use the result of the sigmoid function stored in
+                        #   the output variable
+                        error_term = error_term_formula(y, output)
+
+                        # The gradient descent step, the error times the gradient times the inputs
+                        del_w += error_term * x
+
+                    # Update the weights here. The learning rate times the 
+                    # change in weights, divided by the number of records to average
+                    weights += learnrate * del_w / n_records
+
+                    # Printing out the mean square error on the training set
+                    if e % (epochs / 10) == 0:
+                        out = sigmoid(np.dot(features, weights))
+                        loss = np.mean((out - targets) ** 2)
+                        print("Epoch:", e)
+                        if last_loss and last_loss < loss:
+                            print("Train loss: ", loss, "  WARNING - Loss Increasing")
+                        else:
+                            print("Train loss: ", loss)
+                        last_loss = loss
+                        print("=========")
+                print("Finished training!")
+                return weights
+
+            weights = train_nn(features, targets, epochs, learnrate)
+
+            ```
+
+
 

@@ -2838,8 +2838,115 @@ In Python, functions are first-class objects. This means that functions can be p
                 return weights
 
             weights = train_nn(features, targets, epochs, learnrate)
-
             ```
 
+    * Cross Entropy (Log-Loss) vs Mean Squared Error
 
+        * In the previous section, Luis taught you about the log-loss function. There are many other error functions used for neural networks. Let me teach you another one, called the mean squared error. As the name says, this one is the mean of the squares of the differences between the predictions and the labels. In the following section I'll go over it in detail, then we'll get to implement backpropagation with it on the same student admissions dataset.
 
+        * And as a bonus, we'll be implementing this in a very effective way using matrix multiplication with NumPy!
+
+    * Gradient Descent with Squared Errors
+
+        * ![nn118](./images/nn118.png)
+
+        * ![nn119](./images/nn119.png)
+
+            * Intuitively, square loss is bad for classification because the model needs the targets to hit specific values (0/1) rather than having larger values correspond to higher probabilities. This makes it really hard for the model to learn to express high and low confidence, and lots of times the model will struggle to keep values on 0/1 instead of doing something useful.
+
+            * Cross-entropy (or softmax loss, but cross-entropy works better) is a better measure than MSE for classification, because the decision boundary in a classification task is large (in comparison with regression). MSE doesn't punish misclassifications enough, but is the right loss for regression, where the distance between two values that can be predicted is small.
+        
+        * ![nn120](./images/nn120.png)
+
+        * ![nn121](./images/nn121.png)
+
+        * ![nn122](./images/nn122.png)
+
+        * ![nn123](./images/nn123.png)
+
+            * In the case of neural nets, local minima are not necessarily that much of a problem. Some of the local minima are due to the fact that you can get a functionally identical model by permuting the hidden layer units, or negating the inputs and output weights of the network etc. Also if the local minima is only slightly non-optimal, then the difference in performance will be minimal and so it won't really matter. Lastly, and this is an important point, the key problem in fitting a neural network is over-fitting, so aggressively searching for the global minima of the cost function is likely to result in overfitting and a model that performs poorly.
+
+            * Adding a regularisation term, e.g. weight decay, can help to smooth out the cost function, which can reduce the problem of local minima a little, and is something I would recommend anyway as a means of avoiding overfitting.
+
+        * ![nn124](./images/nn124.png)
+
+            * Sum of many predictions (many data points)
+        
+        * ![nn125](./images/nn125.png)
+
+            * We add 1/2 to clean the math
+        
+        * ![nn126](./images/nn126.png)
+
+        * ![nn127](./images/nn127.png)
+
+        * ![nn128](./images/nn128.png)
+
+        * ![nn129](./images/nn129.png)
+
+        * ![nn130](./images/nn130.png)
+
+        * ![nn131](./images/nn131.png)
+
+        * ![nn132](./images/nn132.png)
+
+        * ![nn133](./images/nn133.png)
+
+        * ![nn134](./images/nn134.png)
+
+        * ```python
+            import numpy as np
+
+            def sigmoid(x):
+                """
+                Calculate sigmoid
+                """
+                return 1/(1+np.exp(-x))
+
+            def sigmoid_prime(x):
+                """
+                # Derivative of the sigmoid function
+                """
+                return sigmoid(x) * (1 - sigmoid(x))
+
+            learnrate = 0.5
+            x = np.array([1, 2, 3, 4])
+            y = np.array(0.5)
+
+            # Initial weights
+            w = np.array([0.5, -0.5, 0.3, 0.1])
+
+            ### Calculate one gradient descent step for each weight
+            ### Note: Some steps have been consolidated, so there are
+            ###       fewer variable names than in the above sample code
+
+            # TODO: Calculate the node's linear combination of inputs and weights
+            h = np.dot(x, w)
+
+            # TODO: Calculate output of neural network
+            nn_output = sigmoid(h)
+
+            # TODO: Calculate error of neural network
+            error = y - nn_output
+
+            # TODO: Calculate the error term
+            #       Remember, this requires the output gradient, which we haven't
+            #       specifically added a variable for.
+            error_term = error * sigmoid_prime(h)
+            # Note: The sigmoid_prime function calculates sigmoid(h) twice,
+            #       but you've already calculated it once. You can make this
+            #       code more efficient by calculating the derivative directly
+            #       rather than calling sigmoid_prime, like this:
+            # error_term = error * nn_output * (1 - nn_output)
+
+            # TODO: Calculate change in weights
+            del_w = learnrate * error_term * x
+
+            print('Neural Network output:')
+            print(nn_output)
+            print('Amount of Error:')
+            print(error)
+            print('Change in Weights:')
+            print(del_w)
+
+            ```

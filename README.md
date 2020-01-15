@@ -3113,6 +3113,7 @@ In Python, functions are first-class objects. This means that functions can be p
 
         * ```python
             import numpy as np
+        * ```python
             from data_prep import features, targets, features_test, targets_test
 
             np.random.seed(21)
@@ -3208,6 +3209,8 @@ In Python, functions are first-class objects. This means that functions can be p
         * ![testing5](./images/testing5.png)
 
         * ![testing6](./images/testing6.png)
+    
+    * Early Stop
 
         * ![testing7](./images/testing7.png)
 
@@ -3220,3 +3223,144 @@ In Python, functions are first-class objects. This means that functions can be p
         * ![testing11](./images/testing11.png)
 
         * ![testing12](./images/testing12.png) 
+
+    * Regularization
+
+        * ![testing13](./images/testing13.png) 
+
+        * ![testing14](./images/testing14.png) 
+
+        * ![testing15](./images/testing15.png) 
+
+        * ![testing16](./images/testing16.png) 
+
+        * ![testing17](./images/testing17.png) 
+
+        * ![testing18](./images/testing18.png) 
+
+        * ![testing19](./images/testing19.png) 
+
+        * ![testing21](./images/testing21.png)
+
+        * ![testing22](./images/testing22.png) 
+
+        * ![testing23](./images/testing23.png) 
+
+            * L2 will prefer a vector (0.5, 0.5) over a vector (1, 0) since the sum of the weights is lower. That means a lower penalization on our error function
+        
+        * We wan't to regularize our error function so we don't overfit.
+    
+    * Dropout
+
+        * You are not allowed to use a specific node at a specific epoch. It is like we are turning nodes on and off.
+
+        * Sometimes one part of the network has very large weights and it ends up dominating all the training. 
+
+        * ![dropout](./images/dropout.png)  
+
+        * ![dropout1](./images/dropout1.png)
+
+        * ![dropout2](./images/dropout2.png) 
+
+        * ![dropout3](./images/dropout3.png)
+
+            * We set a parameter that determines the probability of each node being dropped at a particular epoch
+    
+    * Local Minima and Random Restart
+
+        * ![local-minima](./images/local-minima.png)
+
+        * ![local-minima1](./images/local-minima1.png)
+
+            * We start from a few different random places and do gradient descent from all of them.
+
+            * This increases the probability that we will get to the global minima
+    
+    * Vanishing Gradient
+
+        * ![vanishing-gradient](./images/vanishing-gradient.png) 
+
+        * ![vanishing-gradient1](./images/vanishing-gradient1.png)
+
+        * ![vanishing-gradient2](./images/vanishing-gradient2.png)
+
+        * ![vanishing-gradient3](./images/vanishing-gradient3.png)
+
+        * The best way to fix this tiny gradient descent over layers is to change the activation function.
+
+        * ![vanishing-gradient4](./images/vanishing-gradient4.png)
+
+            * Since this function has a range from -1 and 1, the derivatives are larger
+
+        * ![vanishing-gradient5](./images/vanishing-gradient5.png)
+
+            * ReLu improves training significantly without sacrificing much accuracy, since the derivative is one if the number is positive 
+        
+        * ![vanishing-gradient6](./images/vanishing-gradient6.png)
+    
+    * Batch and Stochastic Gradient Descent 
+
+        * ![stochastic-1](./images/stochastic-1.png)
+
+        * ![stochastic-2](./images/stochastic-2.png)
+
+            * We take small subsets of data, run them through the neural network calculate the gradient of the error function based on those points and then move one step in that direction.
+
+            * We still want to use all our data, so we split it in batches.
+    
+    * Learning Rate
+
+        * The question of what learning rate to use is pretty much a research question itself, but here's a general rule. 
+
+        * ![learning-rate1](./images/learning-rate1.png)
+
+            * This could be fast in the beginning, but you may miss the minimum and keep going.
+        
+        * ![learning-rate2](./images/learning-rate2.png)
+
+            * If your model is not working, decrease the learning rate
+
+            * The best learning rates are those which decrease as the model is getting closer to a solution.
+        
+        * ![learning-rate3](./images/learning-rate3.png)
+    
+    * Momentum 
+
+        * ![momentum](./images/momentum.png)
+
+        * ![momentum1](./images/momentum1.png)
+
+        * ![momentum2](./images/momentum2.png)
+
+        * ![momentum3](./images/momentum3.png)
+
+            * In order to explore other local minimuns (maybe the global minimum), we will average the last steps done for gradient descent to get momentum and explore the function.
+        
+        * ![momentum4](./images/momentum4.png)
+
+        * ![momentum5](./images/momentum5.png)
+
+        * ![momentum6](./images/momentum6.png)
+
+        * ![momentum7](./images/momentum7.png)
+        
+        * ![momentum8](./images/momentum8.png)
+
+        * ![momentum9](./images/momentum9.png)
+
+        * ![momentum10](./images/momentum10.png)
+
+        * ![momentum11](./images/momentum11.png)
+
+        * ![momentum12](./images/momentum12.png)
+
+        * ![momentum13](./images/momentum13.png)
+        
+
+
+
+
+
+
+
+

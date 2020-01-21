@@ -3425,9 +3425,316 @@ In Python, functions are first-class objects. This means that functions can be p
         * This way PyTorch will divide the 10 values in each row of a by the one value in each row of b. Pay attention to how you take the sum as well. You'll need to define the dim keyword in torch.sum. Setting `dim=0` takes the sum across the rows while `dim=1` takes the sum across the columns.
 
 
+        * ```python
+            import torch
+            from torch import nn
+            import torch.nn.functional as F
+            from torchvision import datasets, transforms
 
+            # Define a transform to normalize the data
+            transform = transforms.Compose([transforms.ToTensor(),
+                                            transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)),
+                                        ])
+            # Download and load the training data
+            trainset = datasets.MNIST('~/.pytorch/MNIST_data/', download=True, train=True, transform=transform)
+            trainloader = torch.utils.data.DataLoader(trainset, batch_size=64, shuffle=True)
 
+            model = nn.Sequential(nn.Linear(784, 128),
+                      nn.ReLU(),
+                      nn.Linear(128, 64),
+                      nn.ReLU(),
+                      nn.Linear(64, 10),
+                      nn.LogSoftmax(dim=1))
 
+            criterion = nn.NLLLoss()
+            optimizer = optim.SGD(model.parameters(), lr=0.003)
+
+            epochs = 5
+            for e in range(epochs):
+                running_loss = 0
+                for images, labels in trainloader:
+                    # Flatten MNIST images into a 784 long vector
+                    images = images.view(images.shape[0], -1)
+                
+                    # TODO: Training pass
+                    optimizer.zero_grad()
+                    
+                    output = model.forward(images)
+                    loss = criterion(output, labels)
+                    loss.backward()
+                    optimizer.step()
+                    
+                    running_loss += loss.item()
+                else:
+                    print(f"Training loss: {running_loss/len(trainloader)}")
+            ```
+
+        * ```python
+            from torch import nn, optim
+            import torch.nn.functional as F
+
+            # TODO: Define your network architecture here
+            class Classifier(nn.Module):
+                def __init__(self):
+                    super().__init__()
+                    self.fc1 = nn.Linear(784, 256)
+                    self.fc2 = nn.Linear(256, 128)
+                    self.fc3 = nn.Linear(128, 64)
+                    self.fc4 = nn.Linear(64, 10)
+                    
+                def forward(self, x):
+                    # make sure input tensor is flattened
+                    x = x.view(x.shape[0], -1)
+                    
+                    x = F.relu(self.fc1(x))
+                    x = F.relu(self.fc2(x))
+                    x = F.relu(self.fc3(x))
+                    x = F.log_softmax(self.fc4(x), dim=1)
+                    
+                    return x
+            
+            # TODO: Create the network, define the criterion and optimizer
+            model = Classifier()
+            criterion = nn.NLLLoss()
+            optimizer = optim.Adam(model.parameters(), lr=0.003)
+
+            # TODO: Train the network here
+            epochs = 5
+
+            for e in range(epochs):
+                running_loss = 0
+                for images, labels in trainloader:
+                    log_ps = model(images)
+                    loss = criterion(log_ps, labels)
+                    
+                    optimizer.zero_grad()
+                    loss.backward()
+                    optimizer.step()
+                    
+                    running_loss += loss.item()
+                else:
+                    print(f"Training loss: {running_loss}")
+            
+            %matplotlib inline
+            %config InlineBackend.figure_format = 'retina'
+
+            import helper
+
+            # Test out your network!
+
+            dataiter = iter(testloader)
+            images, labels = dataiter.next()
+            img = images[1]
+
+            # TODO: Calculate the class probabilities (softmax) for img
+            ps = torch.exp(model(img))
+
+            # Plot the image and probabilities
+            helper.view_classify(img, ps, version='Fashion')
+            ```
+
+        * Now that you have a trained network, you can use it for making predictions. This is typically called inference, a term borrowed from statistics. However, neural networks have a tendency to perform too well on the training data and aren't able to generalize to data that hasn't been seen before. This is called overfitting and it impairs inference performance. To test for overfitting while training, we measure the performance on data not in the training set called the validation set. We avoid overfitting through regularization such as dropout while monitoring the validation performance during training. In this notebook, I'll show you how to do this in PyTorch.
+
+        * As usual, let's start by loading the dataset through torchvision. You'll learn more about torchvision and loading data in a later part. This time we'll be taking advantage of the test set which you can get by setting train=False here:
+
+        * `testset = datasets.FashionMNIST('~/.pytorch/F_MNIST_data/', download=True, train=False, transform=transform)`
+        
+        * The test set contains images just like the training set. Typically you'll see 10-20% of the original dataset held out for testing and validation with the rest being used for training.
+
+        * ![precision](./images/precision.png)
+
+        * ![recall](./images/recall.png)
+
+        * ```python
+            model = Classifier()
+            criterion = nn.NLLLoss()
+            optimizer = optim.Adam(model.parameters(), lr=0.003)
+
+            epochs = 30
+            steps = 0
+
+            train_losses, test_losses = [], []
+            for e in range(epochs):
+                running_loss = 0
+                for images, labels in trainloader:
+                    
+                    optimizer.zero_grad()
+                    
+                    log_ps = model(images)
+                    loss = criterion(log_ps, labels)
+                    loss.backward()
+                    optimizer.step()
+                    
+                    running_loss += loss.item()
+                    
+                else:
+                    test_loss = 0
+                    accuracy = 0
+                    
+                    # Turn off gradients for validation, saves memory and computations
+                    with torch.no_grad():
+                        for images, labels in testloader:
+                            log_ps = model(images)
+                            test_loss += criterion(log_ps, labels)
+                            
+                            ps = torch.exp(log_ps)
+                            top_p, top_class = ps.topk(1, dim=1)
+                            equals = top_class == labels.view(*top_class.shape)
+                            accuracy += torch.mean(equals.type(torch.FloatTensor))
+                            
+                    train_losses.append(running_loss/len(trainloader))
+                    test_losses.append(test_loss/len(testloader))
+
+                    print("Epoch: {}/{}.. ".format(e+1, epochs),
+                        "Training Loss: {:.3f}.. ".format(running_loss/len(trainloader)),
+                        "Test Loss: {:.3f}.. ".format(test_loss/len(testloader)),
+                        "Test Accuracy: {:.3f}".format(accuracy/len(testloader)))
+
+            %matplotlib inline
+            %config InlineBackend.figure_format = 'retina'
+
+            import matplotlib.pyplot as plt
+
+            plt.plot(train_losses, label='Training loss')
+            plt.plot(test_losses, label='Validation loss')
+            plt.legend(frameon=False)
+            ```
+
+        * ![overfitting](./images/overfitting.png)
+
+        * The network learns the training set better and better, resulting in lower training losses. However, it starts having problems generalizing to data outside the training set leading to the validation loss increasing. The ultimate goal of any deep learning model is to make predictions on new data, so we should strive to get the lowest validation loss possible. One option is to use the version of the model with the lowest validation loss, here the one around 8-10 training epochs. This strategy is called early-stopping. In practice, you'd save the model frequently as you're training then later choose the model with the lowest validation loss.
+
+        * The most common method to reduce overfitting (outside of early-stopping) is dropout, where we randomly drop input units. This forces the network to share information between weights, increasing it's ability to generalize to new data. Adding dropout in PyTorch is straightforward using the nn.Dropout module.
+
+        * ```python
+            class Classifier(nn.Module):
+            def __init__(self):
+                super().__init__()
+                self.fc1 = nn.Linear(784, 256)
+                self.fc2 = nn.Linear(256, 128)
+                self.fc3 = nn.Linear(128, 64)
+                self.fc4 = nn.Linear(64, 10)
+
+                # Dropout module with 0.2 drop probability
+                self.dropout = nn.Dropout(p=0.2)
+
+            def forward(self, x):
+                # make sure input tensor is flattened
+                x = x.view(x.shape[0], -1)
+
+                # Now with dropout
+                x = self.dropout(F.relu(self.fc1(x)))
+                x = self.dropout(F.relu(self.fc2(x)))
+                x = self.dropout(F.relu(self.fc3(x)))
+
+                # output so no dropout here
+                x = F.log_softmax(self.fc4(x), dim=1)
+
+                return x
+            ```
+        
+        * During training we want to use dropout to prevent overfitting, but during inference we want to use the entire network. So, we need to turn off dropout during validation, testing, and whenever we're using the network to make predictions. To do this, you use model.eval(). This sets the model to evaluation mode where the dropout probability is 0. You can turn dropout back on by setting the model to train mode with model.train(). In general, the pattern for the validation loop will look like this, where you turn off gradients, set the model to evaluation mode, calculate the validation loss and metric, then set the model back to train mode.
+
+        * ```python
+            # turn off gradients
+            with torch.no_grad():
+
+                # set model to evaluation mode
+                model.eval()
+
+                # validation pass here
+                for images, labels in testloader:
+                    ...
+
+            # set model back to train mode
+            model.train()
+            ```
+
+        * ```python
+            model = Classifier()
+            criterion = nn.NLLLoss()
+            optimizer = optim.Adam(model.parameters(), lr=0.003)
+
+            epochs = 30
+            steps = 0
+
+            train_losses, test_losses = [], []
+            for e in range(epochs):
+                running_loss = 0
+                for images, labels in trainloader:
+                    
+                    optimizer.zero_grad()
+                    
+                    log_ps = model(images)
+                    loss = criterion(log_ps, labels)
+                    loss.backward()
+                    optimizer.step()
+                    
+                    running_loss += loss.item()
+                    
+                else:
+                    test_loss = 0
+                    accuracy = 0
+                    
+                    # Turn off gradients for validation, saves memory and computations
+                    with torch.no_grad():
+                        model.eval()
+                        for images, labels in testloader:
+                            log_ps = model(images)
+                            test_loss += criterion(log_ps, labels)
+                            
+                            ps = torch.exp(log_ps)
+                            top_p, top_class = ps.topk(1, dim=1)
+                            equals = top_class == labels.view(*top_class.shape)
+                            accuracy += torch.mean(equals.type(torch.FloatTensor))
+                    
+                    model.train()
+                    
+                    train_losses.append(running_loss/len(trainloader))
+                    test_losses.append(test_loss/len(testloader))
+
+                    print("Epoch: {}/{}.. ".format(e+1, epochs),
+                        "Training Loss: {:.3f}.. ".format(running_loss/len(trainloader)),
+                        "Test Loss: {:.3f}.. ".format(test_loss/len(testloader)),
+                        "Test Accuracy: {:.3f}".format(accuracy/len(testloader)))
+            ```
+
+            * ![dropout-ex](./images/dropout-ex.png)
+
+        
+        * Loading PyTorch model
+
+            * ```python
+                torch.save(model.state_dict(), 'checkpoint.pth')
+
+                state_dict = torch.load('checkpoint.pth')
+                print(state_dict.keys())
+
+                model.load_state_dict(state_dict)
+
+                # Seems pretty straightforward, but as usual it's a bit more complicated. Loading the state dict works only if the model architecture is exactly the same as the checkpoint architecture. If I create a model with a different architecture, this fails.
+
+                # This means we need to rebuild the model exactly as it was when trained. Information about the model architecture needs to be saved in the checkpoint, along with the state dict. To do this, you build a dictionary with all the information you need to compeletely rebuild the model.
+                checkpoint = {'input_size': 784,
+                    'output_size': 10,
+                    'hidden_layers': [each.out_features for each in model.hidden_layers],
+                    'state_dict': model.state_dict()
+                }
+
+                torch.save(checkpoint, 'checkpoint.pth')
+
+                def load_checkpoint(filepath):
+                    checkpoint = torch.load(filepath)
+                    model = fc_model.Network(checkpoint['input_size'],
+                                            checkpoint['output_size'],
+                                            checkpoint['hidden_layers'])
+                    model.load_state_dict(checkpoint['state_dict'])
+                    
+                    return model
+                
+                model = load_checkpoint('checkpoint.pth')
+                print(model)
+                ```
 
 
 

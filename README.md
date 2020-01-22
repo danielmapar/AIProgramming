@@ -3735,7 +3735,24 @@ In Python, functions are first-class objects. This means that functions can be p
                 model = load_checkpoint('checkpoint.pth')
                 print(model)
                 ```
+        * Data Augmentation
+            
+            * A common strategy for training neural networks is to introduce randomness in the input data itself. For example, you can randomly rotate, mirror, scale, and/or crop your images during training. This will help your network generalize as it's seeing the same images but in different locations, with different sizes, in different orientations, etc.
 
+            * To randomly rotate, scale and crop, then flip your images you would define your transforms like this:
 
+            * ```python
+                train_transforms = transforms.Compose([transforms.RandomRotation(30),
+                                       transforms.RandomResizedCrop(224),
+                                       transforms.RandomHorizontalFlip(),
+                                       transforms.ToTensor(),
+                                       transforms.Normalize([0.5, 0.5, 0.5], 
+                                                            [0.5, 0.5, 0.5])])
+                ```
 
+    * Few things to check if your network isn't training appropriately
+
+        * Make sure you're clearing the gradients in the training loop with `optimizer.zero_grad()`. If you're doing a validation loop, be sure to set the network to evaluation mode with `model.eval()`, then back to training mode with `model.train()`.
+
+        * You'll notice the second type is torch.cuda.FloatTensor, this means it's a tensor that has been moved to the GPU. It's expecting a tensor with type torch.FloatTensor, no .cuda there, which means the tensor should be on the CPU. PyTorch can only perform operations on tensors that are on the same device, so either both CPU or both GPU. If you're trying to run your network on the GPU, check to make sure you've moved the model and all necessary tensors to the GPU with .to(device) where device is either "cuda" or "cpu".
 

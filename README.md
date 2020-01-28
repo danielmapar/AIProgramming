@@ -2052,7 +2052,7 @@ In Python, functions are first-class objects. This means that functions can be p
             * This average is the gradient descent
 
             * Stochastic gradiant descent 
-                * Calculate the gradiant per batch size to minimze computing
+                * Calculate the gradiant per batch size to minimize computing
 
         * ![calc-nn](./images/calc-nn28.png) 
 

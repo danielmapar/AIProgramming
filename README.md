@@ -10,7 +10,7 @@
     * `7 // 2 == 3`: It rounds down the answer to an integer
         * `-5 // 2 == -3` and `5 // 2 == 2` 
 
-* ![reserved](./images/reserved.PNG)
+* ![reserved](./images/reserved.png)
 
 * Note that this code uses scientific notation to define large numbers. `4.445e8` is equal to `4.445 * 10 ** 8` which is equal to `444500000.0`.
 
@@ -66,7 +66,7 @@
 ### Lesson 4: Control Flow
 
 * Zip: 
-    * ![zip](./images/zip.PNG)
+    * ![zip](./images/zip.png)
     * ```python
         letters = ['a', 'b', 'c']
         nums = [1, 2, 3]
@@ -94,7 +94,7 @@
             ```
 
 * Enumerate
-    * ![enumerate](./images/enumerate.PNG)
+    * ![enumerate](./images/enumerate.png)
     * enumerate is a built in function that returns an iterator of tuples containing indices and values of a list. You'll often use this when you want the index along with each element of an iterable in a loop.
         * ```python
             letters = ['a', 'b', 'c', 'd', 'e']
@@ -103,7 +103,7 @@
             ```
 
 * List Comprehensions
-    * ![list-comprehensions](./images/list_comprehensions.PNG) 
+    * ![list-comprehensions](./images/list_comprehensions.png) 
     * ```python
         squares = [x**2 for x in range(9) if x % 2 == 0]
         squares = [x**2 for x in range(9) if x % 2 == 0 else x + 3]
@@ -121,7 +121,7 @@
 
     * You can use lambda expressions to create anonymous functions. That is, functions that don’t have a name. They are helpful for creating quick functions that aren’t needed later in your code. This can be especially useful for higher order functions, or functions that take in other functions as arguments.
 
-    * ![lambda](./images/lambda.PNG) 
+    * ![lambda](./images/lambda.png) 
     * `double = lambda x: x * 2`
 
 * Iterator: An object that represents a stream of data
@@ -521,7 +521,7 @@ In Python, functions are first-class objects. This means that functions can be p
     * You should consider installing Notebook Conda to help manage your environments. Run the following command:
 
         * `conda install nb_conda`
-        * ![py-conda](./images/py-conda.PNG)
+        * ![py-conda](./images/py-conda.png)
     
     * You can shutdown the entire server by pressing control + C twice in the terminal. Again, this will immediately shutdown all the running notebooks, so make sure your work is saved!
 
@@ -549,23 +549,23 @@ In Python, functions are first-class objects. This means that functions can be p
 
     * At some point, you'll probably spend some effort optimizing code to run faster. Timing how quickly your code runs is essential for this optimization. You can use the `timeit` magic command to time how long it takes for a function to run, like so:
 
-        * ![magic-timeit](./images/magic-timeit.PNG)
+        * ![magic-timeit](./images/magic-timeit.png)
     
     * If you want to time how long it takes for a whole cell to run, you’d use `%%timeit` like so:
 
-        * ![magic-timeit2](./images/magic-timeit2.PNG)
+        * ![magic-timeit2](./images/magic-timeit2.png)
 
 * **Embedding visualizations in notebooks**
 
     * As mentioned before, notebooks let you embed images along with text and code. This is most useful when you’re using `matplotlib` or other plotting packages to create visualizations. You can use `%matplotlib` to set up matplotlib for interactive use in the notebook. By default figures will render in their own window. However, you can pass arguments to the command to select a specific "backend", the software that renders the image. To render figures directly in the notebook, you should use the inline backend with the command `%matplotlib inline`.
 
-    * ![magic-matplotlib](./images/magic-matplotlib.PNG)
+    * ![magic-matplotlib](./images/magic-matplotlib.png)
 
 * **Debugging in the Notebook**
 
     * With the Python kernel, you can turn on the interactive debugger using the magic command `%pdb`. When you cause an error, you'll be able to inspect the variables in the current namespace.
 
-        * ![magic-pdb](./images/magic-pdb.PNG) 
+        * ![magic-pdb](./images/magic-pdb.png) 
 
 * **Converting notebooks**
 
@@ -1017,7 +1017,7 @@ In Python, functions are first-class objects. This means that functions can be p
                 print('How many bikes are in Store 2:', store_items['bikes']['store 2'])
                 ```
             
-            * ![data_frame](./images/data_frame4.PNG)
+            * ![data_frame](./images/data_frame4.png)
     
     * It is important to know that when accessing individual elements in a DataFrame, as we did in the last example above, the labels should always be provided with the column label first, i.e. in the form `dataframe[column][row]`. For example, when retrieving the number bikes in store 2, we first used the column label bikes and then the row label store 2. If you provide the row label first you will get an error.
 
@@ -1063,7 +1063,7 @@ In Python, functions are first-class objects. This means that functions can be p
             store_items
             ```
 
-        * ![data_frame](./images/data_frame5.PNG)
+        * ![data_frame](./images/data_frame5.png)
     
 
     * It is also possible, to insert new columns into the DataFrames anywhere we want. The `dataframe.insert(loc,label,data)` method allows us to insert a new column in the dataframe at location loc, with the given column label, and given data. Let's add new column named shoes right before the suits column. Since suits has numerical index value 4 then we will use this value as loc. Let's see how this works:
@@ -1344,13 +1344,13 @@ In Python, functions are first-class objects. This means that functions can be p
         
         * The first three images below depict a tidy dataset. This tidy dataset is in the field of healthcare and has two tables: one for patients (with their patient ID, name, and age) and one for treatments (with patient ID, what drug that patient is taking, and the dose of that drug).
 
-            * ![tidy-data-one](./images/tidy-data-one.PNG)
-            * ![tidy-data-two](./images/tidy-data-two.PNG)
-            * ![tidy-data-three](./images/tidy-data-three.PNG)
+            * ![tidy-data-one](./images/tidy-data-one.png)
+            * ![tidy-data-two](./images/tidy-data-two.png)
+            * ![tidy-data-three](./images/tidy-data-three.png)
         
         * The next image depicts the same data but in one representation of a non-tidy format (there are other possible non-tidy representations). The Drug A, Drug B, and Drug C columns should form one 'Drug' column, since this is one variable. The entire table should be separated into two tables: a patients table and a treatments table.
 
-            * ![tidy-data-four](./images/tidy-data-four.PNG)
+            * ![tidy-data-four](./images/tidy-data-four.png)
         
         * While the data provided to you in the course will all be tidy, in practice, you may need to perform tidying work before exploration. You should be comfortable with reshaping your data or perform transformations to split or combine features in your data, resulting in new data columns. This work should be performed in the wrangling stage of the data analysis process, so if you need to know more about these operations, it is recommended that you refer back to the data wrangling content from earlier in the program.
 
@@ -1365,13 +1365,13 @@ In Python, functions are first-class objects. This means that functions can be p
     * Bar charts for **qualitative** variables
         * Quantitative data analysis, which deals with numbers.
         * Qualitative data analysis, which deals with text or pictures.
-        * ![qualitative_variables](./images/qualitative_variables.PNG)
-        * ![qualitative_variables2](./images/qualitative_variables2.PNG)
-        * ![nominal_data](./images/nominal_data.PNG)
+        * ![qualitative_variables](./images/qualitative_variables.png)
+        * ![qualitative_variables2](./images/qualitative_variables2.png)
+        * ![nominal_data](./images/nominal_data.png)
             * Which category is the most common, and how the rest of the categories compare 
-        * ![ordinal_data](./images/ordinal_data.PNG)
+        * ![ordinal_data](./images/ordinal_data.png)
             * It is more important to know if the most common categories are lower or higher in the spectrum, rather than which label is the most frequent 
-            * ![ordinal_data2](./images/ordinal_data2.PNG)
+            * ![ordinal_data2](./images/ordinal_data2.png)
     
     * **Histograms**
         * A histogram is used to plot the distribution of a numeric variable. It's the **quantitative** version of the bar chart. However, rather than plot one bar for each unique numeric value, values are grouped into continuous bins, and one bar for each bin is plotted depicting the number. For instance, using the default settings for matplotlib's hist function:

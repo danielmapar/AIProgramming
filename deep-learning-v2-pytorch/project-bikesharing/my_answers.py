@@ -98,6 +98,7 @@ class NeuralNetwork(object):
         
         hidden_error_term = None
         
+        # TODO: Add Weight step (input to hidden) and Weight step (hidden to output).
         # Weight step (input to hidden)
         delta_weights_i_h += None
         # Weight step (hidden to output)
@@ -114,6 +115,8 @@ class NeuralNetwork(object):
             n_records: number of records
 
         '''
+        
+        # TODO: Update the weights with gradient descent step
         self.weights_hidden_to_output += None # update hidden-to-output weights with gradient descent step
         self.weights_input_to_hidden += None # update input-to-hidden weights with gradient descent step
 
